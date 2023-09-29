@@ -1,6 +1,9 @@
 ﻿using Tgyka.Microservice.MssqlBase.Data.Entity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
+using System.Security.Principal;
+using AutoMapper;
 
 namespace Tgyka.Microservice.MssqlBase.Data.Repository
 {
@@ -8,23 +11,27 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
     {
         private readonly MssqlDbContext _dbContext;
         private readonly DbSet<TEntity> _dbSet;
+        private readonly IUnitOfWork _unitofWork;
+        private readonly IMapper _mapper;
 
-        public BaseRepository(MssqlDbContext dbContext)
+        public BaseRepository(MssqlDbContext dbContext, IUnitOfWork unitofWork, IMapper mapper)
         {
             _dbContext = dbContext;
             _dbSet = _dbContext.Set<TEntity>();
+            _unitofWork = unitofWork;
+            _mapper = mapper;
         }
 
         public TEntity Get(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
-            Func<TEntity, object> orderBySelector = null, bool isDescending = false, int skip = 0, int take = 0)
+            Func<TEntity, object> orderBySelector = null, bool isDescending = false)
         {
-            return Query(predicate, includes, orderBySelector, isDescending, skip, take).FirstOrDefault();
+            return Query(predicate, includes, orderBySelector, isDescending).FirstOrDefault();
         }
 
         public IEnumerable<TEntity> List(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
-            Func<TEntity, object> orderBySelector = null, bool isDescending = false, int skip = 0, int take = 0)
+            Func<TEntity, object> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0)
         {
-            return Query(predicate, includes, orderBySelector, isDescending, skip, take).ToList();
+            return Query(predicate, includes, orderBySelector, isDescending, page, size).ToList();
         }
 
         public TEntity Set(TEntity entity, EntityState state)
@@ -43,8 +50,34 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
             return entitites.ToList();
         }
 
+        public TMapped GetWithMapper<TMapped>(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
+            Func<TEntity, object> orderBySelector = null, bool isDescending = false)
+        {
+            return _mapper.Map<TMapped>(Get(predicate,includes,orderBySelector,isDescending));
+        }
+
+        public List<TMapped> ListWithMapper<TMapped>(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
+    Func<TEntity, object> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0)
+        {
+            return _mapper.Map<List<TMapped>>(List(predicate, includes, orderBySelector, isDescending,page,size));
+        }
+
+        public async Task<TEntity> SetWithCommit(TEntity entity, EntityState state)
+        {
+            var entityResponse = Set(entity, state);
+            await _unitofWork.CommitAsync();
+            return entityResponse;
+        }
+
+        public async Task<List<TEntity>> SetWithCommit(IEnumerable<TEntity> entitites, EntityState state)
+        {
+            var entitiesResponse = Set(entitites, state);
+            await _unitofWork.CommitAsync();
+            return entitiesResponse;
+        }
+
         private IEnumerable<TEntity> Query(Func<TEntity, bool> predicate, List<Expression<Func<TEntity, object>>> includes,
-            Func<TEntity, object> orderBySelector, bool isDescending, int skip, int take)
+            Func<TEntity, object> orderBySelector, bool isDescending, int page = 0, int size = 0)
         {
             var query = _dbSet.AsNoTracking();
             query = query.Where(r => !r.IsDeleted);
@@ -70,14 +103,14 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
                 else queryPredicate = queryPredicate.OrderBy(orderBySelector);
             }
 
-            if (skip > 0)
+            if (page > 0)
             {
-                queryPredicate = query.Skip(skip);
+                queryPredicate = query.Skip((page - 1) * size) ;
             }
 
-            if (take > 0)
+            if (size > 0)
             {
-                queryPredicate = query.Take(take);
+                queryPredicate = query.Take(size);
             }
 
             return queryPredicate;

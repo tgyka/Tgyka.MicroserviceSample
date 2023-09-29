@@ -7,9 +7,9 @@ using Tgyka.Microservice.ProductService.Data.Repositories.Abstractions;
 
 namespace Tgyka.Microservice.ProductService.Data.Repositories.Implementations
 {
-    public class CategoryRepository : BaseRepository<Category>, ICategoryRepository
+    public class ProductRepository : BaseRepository<Product>, IProductRepository
     {
-        public CategoryRepository(MssqlDbContext dbContext, IUnitOfWork unitofWork, IMapper mapper) : base(dbContext, unitofWork, mapper)
+        public ProductRepository(MssqlDbContext dbContext, IUnitOfWork unitofWork, IMapper mapper) : base(dbContext, unitofWork, mapper)
         {
         }
     }

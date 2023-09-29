@@ -3,7 +3,7 @@ using Tgyka.Microservice.ProductService.Data.Entities;
 
 namespace Tgyka.Microservice.ProductService.Data.Repositories.Abstractions
 {
-    public interface ICategoryRepository: IBaseRepository<Category>
+    public interface IProductRepository: IBaseRepository<Product>
     {
     }
 }

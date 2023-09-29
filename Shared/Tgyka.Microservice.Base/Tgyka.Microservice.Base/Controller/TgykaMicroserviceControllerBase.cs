@@ -1,5 +1,5 @@
-﻿using FoodDelivery.HelperBase.Model.ApiResponse;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Tgyka.Microservice.Base.Model.ApiResponse;
 
 namespace MssqlRestApi.Base.Controller
 {
