@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.Base\Tgyka.Microservice.Base\Tgyka.Microservice.Base.csproj" />
     <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.MssqlBase\Tgyka.Microservice.MssqlBase.csproj" />
   </ItemGroup>

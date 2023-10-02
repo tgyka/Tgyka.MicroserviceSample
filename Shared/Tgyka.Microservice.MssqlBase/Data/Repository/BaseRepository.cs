@@ -62,18 +62,20 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
             return _mapper.Map<List<TMapped>>(List(predicate, includes, orderBySelector, isDescending,page,size));
         }
 
-        public async Task<TEntity> SetWithCommit(TEntity entity, EntityState state)
+        public async Task<TMapped> SetWithCommit<TRequest,TMapped>(TRequest request, EntityState state)
         {
+            var entity = _mapper.Map<TEntity>(request);
             var entityResponse = Set(entity, state);
             await _unitofWork.CommitAsync();
-            return entityResponse;
+            return _mapper.Map<TMapped>(entityResponse);
         }
 
-        public async Task<List<TEntity>> SetWithCommit(IEnumerable<TEntity> entitites, EntityState state)
+        public async Task<List<TMapped>> SetWithCommit<TRequest, TMapped>(List<TRequest> requests, EntityState state)
         {
-            var entitiesResponse = Set(entitites, state);
+            var entities = _mapper.Map<IEnumerable<TEntity>>(requests);
+            var entitiesResponse = Set(entities, state);
             await _unitofWork.CommitAsync();
-            return entitiesResponse;
+            return _mapper.Map<List<TMapped>>(entitiesResponse);
         }
 
         private IEnumerable<TEntity> Query(Func<TEntity, bool> predicate, List<Expression<Func<TEntity, object>>> includes,

@@ -5,7 +5,7 @@ namespace MssqlRestApi.Base.Controller
 {
     public class TgykaMicroserviceControllerBase: ControllerBase
     {
-        public IActionResult ApiJsonResult<T>(ApiResponseDto<T> response) where T : class
+        public IActionResult ApiActionResult<T>(ApiResponseDto<T> response) where T : class
         {
             return new ObjectResult(response)
             {
