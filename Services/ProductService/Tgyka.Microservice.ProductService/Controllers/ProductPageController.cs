@@ -1,11 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MssqlRestApi.Base.Controller;
-using System.Drawing;
-using Tgyka.Microservice.Base.Model.ApiResponse;
-using Tgyka.Microservice.ProductService.Data.Entities;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses;
-using Tgyka.Microservice.ProductService.Model.Dtos.Product.Responses;
 using Tgyka.Microservice.ProductService.Services.Abstractions;
 
 namespace Tgyka.Microservice.ProductService.Controllers

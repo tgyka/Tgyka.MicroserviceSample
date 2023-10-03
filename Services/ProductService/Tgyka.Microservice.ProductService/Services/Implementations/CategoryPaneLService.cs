@@ -7,14 +7,15 @@ using Tgyka.Microservice.ProductService.Model.Dtos.Category.Requests;
 using Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses;
 using Tgyka.Microservice.ProductService.Model.Dtos.Product.Requests;
 using Tgyka.Microservice.ProductService.Model.Dtos.Product.Responses;
+using Tgyka.Microservice.ProductService.Services.Abstractions;
 
 namespace Tgyka.Microservice.ProductService.Services.Implementations
 {
-    public class CategoryPaneLService
+    public class CategoryPanelService: ICategoryPanelService
     {
         private readonly ICategoryRepository _categoryRepository;
 
-        public CategoryPaneLService(ICategoryRepository categoryRepository)
+        public CategoryPanelService(ICategoryRepository categoryRepository)
         {
             _categoryRepository = categoryRepository;
         }
