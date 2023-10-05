@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MssqlRestApi.Base.Controller;
 using Tgyka.Microservice.ProductService.Model.Dtos.Category.Requests;
 using Tgyka.Microservice.ProductService.Services.Abstractions;
@@ -7,6 +8,7 @@ namespace Tgyka.Microservice.ProductService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoryPanelController : TgykaMicroserviceControllerBase
     {
         private ICategoryPanelService _categoryPanelService;

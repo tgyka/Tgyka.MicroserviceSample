@@ -9,10 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Tgyka.Microservice.IdentityService.Data.Entities;
 using Tgyka.Microservice.IdentityService.Models;
+using System.Linq;
+using Tgyka.Microservice.IdentityService.Services.Abstractions;
 
 namespace Tgyka.Microservice.IdentityService.Services.Implementations
 {
-    public class AuthenticationService
+    public class AuthenticationService: IAuthenticationService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -35,6 +37,23 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
             return GenerateJwtToken(user);
         }
 
+        public async Task<string> Register(RegisterModel model)
+        {
+            var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                return "Registration completed successfully";
+            }
+            else
+            {
+                var errors = result.Errors.Select(e => e.Description);
+                return string.Join(", ", errors);
+            }
+        }
+
         private string GenerateJwtToken(ApplicationUser user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your-secret-key"));
@@ -44,14 +63,13 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                // Daha fazla claim ekleyebilirsiniz
             };
 
                 var token = new JwtSecurityToken(
                     issuer: "your-issuer",
                     audience: "your-audience",
                     claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(30), // Token'ın süresi
+                    expires: DateTime.UtcNow.AddMinutes(30), 
                     signingCredentials: credentials);
 
                 return new JwtSecurityTokenHandler().WriteToken(token);
