@@ -1,6 +1,6 @@
 ﻿namespace Tgyka.Microservice.Base.Model.ApiResponse
 {
-    public class ApiResponseDto<TResult> where TResult: class
+    public class ApiResponseDto<TResult>
     {
         public ApiResponseDto(int code, object data, string[] errors)
         {
@@ -21,6 +21,11 @@
         public static ApiResponseDto<TResult> Error(int code, string[] errors)
         {
             return new ApiResponseDto<TResult>(code, null, errors);
+        }
+
+        public static ApiResponseDto<TResult> Error(int code, string error)
+        {
+            return new ApiResponseDto<TResult>(code, null,new string[] { error });
         }
     }
 }
