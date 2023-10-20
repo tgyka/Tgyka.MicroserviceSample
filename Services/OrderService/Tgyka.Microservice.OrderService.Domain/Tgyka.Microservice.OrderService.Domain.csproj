@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.MssqlBase\Tgyka.Microservice.MssqlBase.csproj" />
+  </ItemGroup>
+
 </Project>
