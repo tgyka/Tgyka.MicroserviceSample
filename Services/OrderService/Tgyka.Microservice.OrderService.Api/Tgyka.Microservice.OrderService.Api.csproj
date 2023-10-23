@@ -12,7 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.Base\Tgyka.Microservice.Base\Tgyka.Microservice.Base.csproj" />
+    <ProjectReference Include="..\Tgyka.Microservice.OrderService.Application\Tgyka.Microservice.OrderService.Application.csproj" />
   </ItemGroup>
 
 </Project>
