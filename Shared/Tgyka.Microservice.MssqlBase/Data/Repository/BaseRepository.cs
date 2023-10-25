@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
 using System.Security.Principal;
 using AutoMapper;
+using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
 
 namespace Tgyka.Microservice.MssqlBase.Data.Repository
 {
@@ -28,24 +29,36 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
             return Query(predicate, includes, orderBySelector, isDescending).FirstOrDefault();
         }
 
-        public IEnumerable<TEntity> List(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
+        public PaginationList<TEntity> List(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
             Func<TEntity, object> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0)
         {
-            return Query(predicate, includes, orderBySelector, isDescending, page, size).ToList();
+            var query = Query(predicate, includes, orderBySelector, isDescending, page, size);
+            var data = query.ToList();
+            var count = query.Count();
+            return new PaginationList<TEntity>(data,count,page,size);
         }
 
-        public TEntity Set(TEntity entity, EntityState state)
+        public IQueryable<TEntity> GetQuery()
         {
-            _dbSet.Entry(entity).State = state;
+            return _dbSet.AsNoTracking();
+        }
+
+        public TEntity Set(TEntity entity, CommandState state)
+        {
+            if(state == CommandState.SoftDelete)
+            {
+                entity.IsDeleted = true;
+            }
+
+            _dbSet.Entry(entity).State = GetEntityStateFromCommandState(state);
             return entity;
         }
 
-        public List<TEntity> Set(IEnumerable<TEntity> entitites, EntityState state)
+        public List<TEntity> Set(IEnumerable<TEntity> entitites, CommandState state)
         {
             foreach (var entry in entitites)
             {
-                _dbSet.Entry(entry).State = state;
-
+                Set(entry, state);
             }
             return entitites.ToList();
         }
@@ -56,13 +69,14 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
             return _mapper.Map<TMapped>(Get(predicate,includes,orderBySelector,isDescending));
         }
 
-        public List<TMapped> ListWithMapper<TMapped>(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
-    Func<TEntity, object> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0)
+        public PaginationList<TMapped> ListWithMapper<TMapped>(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,Func<TEntity, object> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0)
         {
-            return _mapper.Map<List<TMapped>>(List(predicate, includes, orderBySelector, isDescending,page,size));
+            var response = List(predicate, includes, orderBySelector, isDescending, page, size);
+            var mappedData = _mapper.Map<List<TMapped>>(response.DataList);
+            return new PaginationList<TMapped>(mappedData,response.Count,response.Page,response.Size);
         }
 
-        public async Task<TMapped> SetWithCommit<TRequest,TMapped>(TRequest request, EntityState state)
+        public async Task<TMapped> SetWithCommit<TRequest,TMapped>(TRequest request, CommandState state)
         {
             var entity = _mapper.Map<TEntity>(request);
             var entityResponse = Set(entity, state);
@@ -70,7 +84,7 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
             return _mapper.Map<TMapped>(entityResponse);
         }
 
-        public async Task<List<TMapped>> SetWithCommit<TRequest, TMapped>(List<TRequest> requests, EntityState state)
+        public async Task<List<TMapped>> SetWithCommit<TRequest, TMapped>(List<TRequest> requests, CommandState state)
         {
             var entities = _mapper.Map<IEnumerable<TEntity>>(requests);
             var entitiesResponse = Set(entities, state);
@@ -117,5 +131,30 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
 
             return queryPredicate;
         }
+
+        private EntityState GetEntityStateFromCommandState(CommandState commandState)
+        {
+            switch (commandState)
+            {
+                case CommandState.Create:
+                    return EntityState.Added;
+                case CommandState.Update:
+                    return EntityState.Modified;
+                case CommandState.SoftDelete:
+                    return EntityState.Modified;
+                case CommandState.HardDelete:
+                    return EntityState.Deleted;
+                default:
+                    return EntityState.Unchanged;
+            }
+        }
+    }
+
+    public enum CommandState
+    {
+        Create,
+        Update,
+        SoftDelete,
+        HardDelete
     }
 }

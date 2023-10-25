@@ -13,7 +13,7 @@
         public object? Data { get; private set; }
         public string[]? Errors { get; private set; }
 
-        public static ApiResponseDto<TResult> Success(int code, object data)
+        public static ApiResponseDto<TResult> Success(int code, TResult data)
         {
             return new ApiResponseDto<TResult>(code, data, null);
         }

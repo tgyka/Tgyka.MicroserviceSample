@@ -1,6 +1,7 @@
 ﻿
 using System.Drawing;
 using Tgyka.Microservice.Base.Model.ApiResponse;
+using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
 using Tgyka.Microservice.ProductService.Data.Entities;
 using Tgyka.Microservice.ProductService.Data.Repositories.Abstractions;
 using Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses;
@@ -20,16 +21,16 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
             _productRepository = productRepository;
         }
 
-        public ApiResponseDto<List<CategoryPageResponseDto>> GetCategories()
+        public ApiResponseDto<PaginationList<CategoryPageResponseDto>> GetCategories()
         {
             var data = _categoryRepository.ListWithMapper<CategoryPageResponseDto>();
-            return ApiResponseDto<List<CategoryPageResponseDto>>.Success(200, data);
+            return ApiResponseDto<PaginationList<CategoryPageResponseDto>>.Success(200, data);
         }
 
-        public ApiResponseDto<List<ProductPageResponseDto>> GetProductsByCategoryId(int categoryId,int page , int size)
+        public ApiResponseDto<PaginationList<ProductPageResponseDto>> GetProductsByCategoryId(int categoryId,int page , int size)
         {
             var data = _productRepository.ListWithMapper<ProductPageResponseDto>(r => r.CategoryId == categoryId, null, r => r.CreatedDate, true, page, size);
-            return ApiResponseDto<List<ProductPageResponseDto>>.Success(200, data);
+            return ApiResponseDto<PaginationList<ProductPageResponseDto>>.Success(200, data);
         }
 
         public ApiResponseDto<ProductPageResponseDto> GetProductById(int productId)
