@@ -2,7 +2,7 @@
 
 namespace Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses
 {
-    public class CategorySelectBoxResponse: GetDto
+    public class CategorySelectBoxResponseDto: GetDto
     {
         public string Name { get; set; }
     }

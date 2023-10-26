@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Tgyka.Microservice.ProductService;
+using Tgyka.Microservice.ProductService.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,34 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+builder.Services.AddSwagger();
+builder.Services.AddServices();
+builder.Services.AddRepositories();
+builder.Services.AddAutoMapper(typeof(Program));
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                new string[] { }
-            }
-        });
-});
-
+builder.Services.AddDbContext<ProductServiceDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Mssql")));
 
 builder.Services.AddAuthentication("Bearer")
         .AddJwtBearer("Bearer", options =>
