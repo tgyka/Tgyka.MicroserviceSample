@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Tgyka.Microservice.ProductService;
@@ -24,6 +25,11 @@ builder.Services.AddAuthentication("Bearer")
             options.Authority = "https://identityserver.com";
             options.Audience = "api1"; 
         });
+
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq();
+});
 
 var app = builder.Build();
 

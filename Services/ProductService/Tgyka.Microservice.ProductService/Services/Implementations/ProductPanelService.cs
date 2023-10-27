@@ -48,10 +48,10 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
             return ApiResponseDto<ProductPanelResponseDto>.Success(200, data);
         }
 
-        public async Task<ApiResponseDto<PaginationList<CategorySelectBoxResponse>>> ListCategoriesSelectBox()
+        public async Task<ApiResponseDto<PaginationList<CategorySelectBoxResponseDto>>> ListCategoriesSelectBox()
         {
-            var data = _categoryRepository.ListWithMapper<CategorySelectBoxResponse>();
-            return ApiResponseDto<PaginationList<CategorySelectBoxResponse>>.Success(200, data);
+            var data = _categoryRepository.ListWithMapper<CategorySelectBoxResponseDto>();
+            return ApiResponseDto<PaginationList<CategorySelectBoxResponseDto>>.Success(200, data);
         }
     }
 }

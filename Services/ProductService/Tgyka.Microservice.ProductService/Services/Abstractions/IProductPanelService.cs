@@ -10,7 +10,7 @@ namespace Tgyka.Microservice.ProductService.Services.Abstractions
     {
         Task<ApiResponseDto<ProductPanelResponseDto>> CreateProduct(ProductPanelCreateRequestDto productRequest);
         Task<ApiResponseDto<ProductPanelResponseDto>> DeleteProduct(int productId);
-        Task<ApiResponseDto<PaginationList<CategorySelectBoxResponse>>> ListCategoriesSelectBox();
+        Task<ApiResponseDto<PaginationList<CategorySelectBoxResponseDto>>> ListCategoriesSelectBox();
         ApiResponseDto<PaginationList<ProductGridPanelResponseDto>> ListProductsGrid(int page, int size);
         Task<ApiResponseDto<ProductPanelResponseDto>> UpdateProduct(ProductPanelUpdateRequestDto productRequest);
     }
