@@ -20,6 +20,7 @@ namespace Tgyka.Microservice.OrderService.Domain.Entities
     public enum OrderStatus
     {
         Created,
+        StockNotReserved,
         Preparing,
         Shipping,
         Delivered,
