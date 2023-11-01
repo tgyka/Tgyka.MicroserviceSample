@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
-using Tgyka.Microservice.OrderService.Application.Models.Events;
 using Tgyka.Microservice.OrderService.Domain.Entities;
 using Tgyka.Microservice.OrderService.Domain.Repositories;
+using Tgyka.Microservice.Rabbitmq.Events;
 
 namespace Tgyka.Microservice.OrderService.Application.Consumers
 {

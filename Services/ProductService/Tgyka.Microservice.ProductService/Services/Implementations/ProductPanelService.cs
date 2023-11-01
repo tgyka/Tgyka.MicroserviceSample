@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using Tgyka.Microservice.Base.Model.ApiResponse;
 using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
@@ -8,6 +9,7 @@ using Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses;
 using Tgyka.Microservice.ProductService.Model.Dtos.Product.Requests;
 using Tgyka.Microservice.ProductService.Model.Dtos.Product.Responses;
 using Tgyka.Microservice.ProductService.Services.Abstractions;
+using Tgyka.Microservice.Rabbitmq.Events;
 
 namespace Tgyka.Microservice.ProductService.Services.Implementations
 {
@@ -15,11 +17,13 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ProductPanelService(IProductRepository productRepository, ICategoryRepository categoryRepository)
+        public ProductPanelService(IProductRepository productRepository, ICategoryRepository categoryRepository, IPublishEndpoint publishEndpoint)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
+            _publishEndpoint = publishEndpoint;
         }
 
         public ApiResponseDto<PaginationList<ProductGridPanelResponseDto>> ListProductsGrid(int page, int size)
@@ -38,6 +42,9 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
         public async Task<ApiResponseDto<ProductPanelResponseDto>> UpdateProduct(ProductPanelUpdateRequestDto productRequest)
         {
             var data = await _productRepository.SetWithCommit<ProductPanelUpdateRequestDto, ProductPanelResponseDto>(productRequest, CommandState.Update);
+
+            await _publishEndpoint.Publish(new ProductUpdateEvent(data.Id, data.Name, data.Description, data.Price, data.Stock, data.CategoryId));
+
             return ApiResponseDto<ProductPanelResponseDto>.Success(200, data);
         }
 

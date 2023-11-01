@@ -2,7 +2,7 @@
 using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
 using Tgyka.Microservice.ProductService.Data.Repositories.Abstractions;
-using Tgyka.Microservice.ProductService.Model.Events;
+using Tgyka.Microservice.Rabbitmq.Events;
 
 namespace Tgyka.Microservice.ProductService.Consumers
 {
@@ -21,7 +21,8 @@ namespace Tgyka.Microservice.ProductService.Consumers
 
         public async Task Consume(ConsumeContext<ProductStockUpdatedEvent> context)
         {
-            var product = _productRepository.Get(r => r.Id == context.Message.ProductId);
+            var productId = context.Message.ProductId;
+            var product = _productRepository.Get(r => r.Id == productId);
 
             if(product == null)
             {
@@ -30,7 +31,7 @@ namespace Tgyka.Microservice.ProductService.Consumers
 
             if(product.Stock <= 0)
             {
-                _publishEndpoint.Publish(new ProductStockNotReservedEvent { ProductId = context.Message.ProductId });
+                await _publishEndpoint.Publish(new ProductStockNotReservedEvent(productId,context.Message.OrderId));
                 return;
             }
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tgyka.Microservice.Base.Model.ApiResponse;
+using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.OrderItem;
@@ -36,9 +37,9 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Commands
         {
             var order = _mapper.Map<Order>(request);
 
-            _orderItemRepository.Set(order.OrderItems, Microsoft.EntityFrameworkCore.EntityState.Added);
-            _addressRepository.Set(order.Address, Microsoft.EntityFrameworkCore.EntityState.Added);
-            _orderRepository.Set(order, Microsoft.EntityFrameworkCore.EntityState.Added);
+            _orderItemRepository.Set(order.OrderItems, CommandState.Create);
+            _addressRepository.Set(order.Address, CommandState.Create);
+            _orderRepository.Set(order, CommandState.Create);
             await _unitOfWork.CommitAsync();
 
             return ApiResponseDto<OrderDto>.Success(201,_mapper.Map<OrderDto>(order));
