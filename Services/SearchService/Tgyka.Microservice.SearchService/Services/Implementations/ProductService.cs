@@ -1,10 +1,8 @@
 ﻿using Nest;
-using System.Reflection.Metadata;
 using Tgyka.Microservice.Base.Model.ApiResponse;
 using Tgyka.Microservice.SearchService.Model.Dtos;
 using Tgyka.Microservice.SearchService.Services.Abstractions;
 using Tgyka.Microservice.SearchService.Settings;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Tgyka.Microservice.SearchService.Services.Implementations
 {
@@ -21,19 +19,19 @@ namespace Tgyka.Microservice.SearchService.Services.Implementations
                         .DefaultIndex(elasticSetttings.DefaultIndex);
             _client = new ElasticClient(_connectionSettings);
 
-            if (!_client.Indices.Exists("productsearchs").Exists)
+            if (!_client.Indices.Exists(_elasticSetttings.DefaultIndex).Exists)
             {
-                _client.Indices.Create("productsearchs",
-                     index => index.Map<ProductResponseDto>(
+                _client.Indices.Create(_elasticSetttings.DefaultIndex,
+                     index => index.Map<ProductDto>(
                           x => x
                          .AutoMap()
                   ));
             }
         }
 
-        public async Task<ApiResponseDto<List<ProductResponseDto>>> GetProducts(string searchString,int page,int size,bool priceIsDescending)
+        public async Task<ApiResponseDto<List<ProductDto>>> GetProducts(string searchString,int page,int size,bool priceIsDescending)
         {
-            var data = (await _client.SearchAsync<ProductResponseDto>(s => s
+            var data = (await _client.SearchAsync<ProductDto>(s => s
                 .From((page - 1) * size)
                 .Size(size)
                 .Query(q => q
@@ -50,18 +48,32 @@ namespace Tgyka.Microservice.SearchService.Services.Implementations
                     .Field(f => f.Field(p => p.Price).Order(priceIsDescending ? SortOrder.Descending : SortOrder.Ascending))
                 ))).Documents.ToList();
 
-            return ApiResponseDto<List<ProductResponseDto>>.Success(200, data);
+            return ApiResponseDto<List<ProductDto>>.Success(200, data);
         }
 
-        public async Task<ApiResponseDto<ProductResponseDto>> CreateProduct(ProductResponseDto request)
+        public async Task<ApiResponseDto<ProductDto>> CreateProduct(ProductDto request)
         {
-            await _client.IndexDocumentAsync(request);
-            return ApiResponseDto<ProductResponseDto>.Success(200, request);
+            var result = await _client.IndexAsync(request, i => i.Index(_elasticSetttings.DefaultIndex));
+
+            if(!result.IsValid)
+            {
+                return ApiResponseDto<ProductDto>.Error(400,"Error");
+            }
+            
+            return ApiResponseDto<ProductDto>.Success(200, request);
+        }
+
+        public async Task<ApiResponseDto<ProductDto>> UpdateProduct(ProductDto request)
+        {
+            var result = await _client.UpdateAsync<ProductDto>(request.Id, u => u
+                  .Index(_elasticSetttings.DefaultIndex)
+                  .Doc(request));
+            return ApiResponseDto<ProductDto>.Success(200, request);
         }
 
         public async Task<ApiResponseDto<bool>> DeleteProduct(int productId)
         {
-            var result = await _client.DeleteAsync<ProductResponseDto>(productId.ToString());
+            var result = await _client.DeleteAsync<ProductDto>(productId.ToString());
             return ApiResponseDto<bool>.Success(200, result.IsValid);
         }
     }

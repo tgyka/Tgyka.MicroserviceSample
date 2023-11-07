@@ -17,9 +17,10 @@ namespace Tgyka.Microservice.SearchService.Controllers
             _productService = productService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetProducts(string searchString,int page,int size,bool priceIsDescending = false)
         {
-            return ApiActionResult<List<ProductResponseDto>>(await _productService.GetProducts(searchString, page, size, priceIsDescending));
+            return ApiActionResult<List<ProductDto>>(await _productService.GetProducts(searchString, page, size, priceIsDescending));
         }
     }
 }

@@ -12,5 +12,10 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
         {
             _userManager = userManager;
         }
+
+        public void GetUser(string username)
+        {
+
+        }
     }
 }

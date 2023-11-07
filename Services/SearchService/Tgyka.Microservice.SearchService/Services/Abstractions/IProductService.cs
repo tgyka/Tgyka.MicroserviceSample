@@ -5,8 +5,9 @@ namespace Tgyka.Microservice.SearchService.Services.Abstractions
 {
     public interface IProductService
     {
-        Task<ApiResponseDto<ProductResponseDto>> CreateProduct(ProductResponseDto request);
+        Task<ApiResponseDto<ProductDto>> CreateProduct(ProductDto request);
         Task<ApiResponseDto<bool>> DeleteProduct(int productId);
-        Task<ApiResponseDto<List<ProductResponseDto>>> GetProducts(string searchString, int page, int size, bool priceIsDescending);
+        Task<ApiResponseDto<List<ProductDto>>> GetProducts(string searchString, int page, int size, bool priceIsDescending);
+        Task<ApiResponseDto<ProductDto>> UpdateProduct(ProductDto request);
     }
 }
