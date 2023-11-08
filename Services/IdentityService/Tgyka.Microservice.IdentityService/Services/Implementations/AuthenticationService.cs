@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System;
 using System.Reflection;
 using System.Security.Claims;
@@ -11,6 +9,10 @@ using Tgyka.Microservice.IdentityService.Data.Entities;
 using Tgyka.Microservice.IdentityService.Models;
 using System.Linq;
 using Tgyka.Microservice.IdentityService.Services.Abstractions;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using Tgyka.Microservice.IdentityService.Settings;
+using Tgyka.Microservice.Base.Model.ApiResponse;
 
 namespace Tgyka.Microservice.IdentityService.Services.Implementations
 {
@@ -18,26 +20,28 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly JwtSettings _jwtSettings;
 
-        public AuthenticationService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AuthenticationService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, JwtSettings jwtSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _jwtSettings = jwtSettings;
         }
 
-        public async Task<string> Login(LoginModel model)
+        public async Task<ApiResponseDto<AuthResponseDto>> Login(LoginModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
             {
-                return "Error";
+                return ApiResponseDto<AuthResponseDto>.Error(400,"User is not found");
             }
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, lockoutOnFailure: false);
 
-            return GenerateJwtToken(user);
+            return ApiResponseDto<AuthResponseDto>.Success(200,GenerateJwtToken(user));
         }
 
-        public async Task<string> Register(RegisterModel model)
+        public async Task<ApiResponseDto<AuthResponseDto>> Register(RegisterModel model)
         {
             var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
 
@@ -45,20 +49,20 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
 
             if (result.Succeeded)
             {
-                return "Registration completed successfully";
+                return ApiResponseDto<AuthResponseDto>.Success(200, GenerateJwtToken(user));
             }
             else
             {
                 var errors = result.Errors.Select(e => e.Description);
-                return string.Join(", ", errors);
+                return ApiResponseDto<AuthResponseDto>.Error(400,errors.ToArray());
             }
         }
 
-        private string GenerateJwtToken(ApplicationUser user)
+        private AuthResponseDto GenerateJwtToken(ApplicationUser user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("your-secret-key"));
+            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
+            var expireDate = DateTime.UtcNow.AddMinutes(30);
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
@@ -66,13 +70,19 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
             };
 
                 var token = new JwtSecurityToken(
-                    issuer: "your-issuer",
-                    audience: "your-audience",
+                    issuer: _jwtSettings.Issuer,
+                    audience: _jwtSettings.Audience,
                     claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(30), 
+                    expires: expireDate, 
                     signingCredentials: credentials);
 
-                return new JwtSecurityTokenHandler().WriteToken(token);
+                return new AuthResponseDto 
+                { 
+                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                    ExpireDate = expireDate,
+                    Id = user.Id,
+                    Username = user.UserName,
+                };
         }
     }
 }
