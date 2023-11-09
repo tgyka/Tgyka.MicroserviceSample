@@ -21,22 +21,22 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
             _productRepository = productRepository;
         }
 
-        public ApiResponseDto<PaginationList<CategoryPageResponseDto>> GetCategories()
+        public ApiResponse<PaginationList<CategoryPageResponseDto>> GetCategories()
         {
             var data = _categoryRepository.ListWithMapper<CategoryPageResponseDto>();
-            return ApiResponseDto<PaginationList<CategoryPageResponseDto>>.Success(200, data);
+            return ApiResponse<PaginationList<CategoryPageResponseDto>>.Success(200, data);
         }
 
-        public ApiResponseDto<PaginationList<ProductPageResponseDto>> GetProductsByCategoryId(int categoryId,int page , int size)
+        public ApiResponse<PaginationList<ProductPageResponseDto>> GetProductsByCategoryId(int categoryId,int page , int size)
         {
             var data = _productRepository.ListWithMapper<ProductPageResponseDto>(r => r.CategoryId == categoryId, null, r => r.CreatedDate, true, page, size);
-            return ApiResponseDto<PaginationList<ProductPageResponseDto>>.Success(200, data);
+            return ApiResponse<PaginationList<ProductPageResponseDto>>.Success(200, data);
         }
 
-        public ApiResponseDto<ProductPageResponseDto> GetProductById(int productId)
+        public ApiResponse<ProductPageResponseDto> GetProductById(int productId)
         {
             var data = _productRepository.GetWithMapper<ProductPageResponseDto>(r => r.Id == productId);
-            return ApiResponseDto<ProductPageResponseDto>.Success(200, data);
+            return ApiResponse<ProductPageResponseDto>.Success(200, data);
         }
     }
 }

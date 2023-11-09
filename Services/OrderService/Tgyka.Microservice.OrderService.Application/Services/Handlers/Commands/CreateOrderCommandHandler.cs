@@ -16,7 +16,7 @@ using Tgyka.Microservice.OrderService.Domain.Repositories;
 
 namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Commands
 {
-    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, ApiResponseDto<OrderDto>>
+    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, ApiResponse<OrderDto>>
     {
         IOrderRepository _orderRepository;
         IAddressRepository _addressRepository;
@@ -33,7 +33,7 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Commands
             _mapper = mapper;
         }
 
-        public async Task<ApiResponseDto<OrderDto>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<OrderDto>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
             var order = _mapper.Map<Order>(request);
 
@@ -42,7 +42,7 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Commands
             _orderRepository.Set(order, CommandState.Create);
             await _unitOfWork.CommitAsync();
 
-            return ApiResponseDto<OrderDto>.Success(201,_mapper.Map<OrderDto>(order));
+            return ApiResponse<OrderDto>.Success(201,_mapper.Map<OrderDto>(order));
         }
     }
 }

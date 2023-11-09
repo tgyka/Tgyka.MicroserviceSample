@@ -5,8 +5,8 @@ namespace Tgyka.Microservice.BasketService.Services.Abstractions
 {
     public interface IBasketService
     {
-        Task<ApiResponseDto<bool>> Delete(int userId);
-        Task<ApiResponseDto<BasketResponseDto>> GetBasket(int userId);
-        Task<ApiResponseDto<BasketResponseDto>> Upsert(BasketRequestDto request);
+        Task<ApiResponse<bool>> Delete(int userId);
+        Task<ApiResponse<BasketResponseDto>> GetBasket(int userId);
+        Task<ApiResponse<BasketResponseDto>> Upsert(BasketRequestDto request);
     }
 }

@@ -13,7 +13,7 @@ using Tgyka.Microservice.OrderService.Domain.Entities;
 
 namespace Tgyka.Microservice.OrderService.Application.Services.Commands
 {
-    public class CreateOrderCommand: IRequest<ApiResponseDto<OrderDto>>
+    public class CreateOrderCommand: IRequest<ApiResponse<OrderDto>>
     {
         public string BuyerId { get; set; }
 

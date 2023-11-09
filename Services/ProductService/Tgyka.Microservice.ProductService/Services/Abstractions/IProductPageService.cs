@@ -7,8 +7,8 @@ namespace Tgyka.Microservice.ProductService.Services.Abstractions
 {
     public interface IProductPageService
     {
-        ApiResponseDto<PaginationList<CategoryPageResponseDto>> GetCategories();
-        ApiResponseDto<ProductPageResponseDto> GetProductById(int productId);
-        ApiResponseDto<PaginationList<ProductPageResponseDto>> GetProductsByCategoryId(int categoryId, int page, int size);
+        ApiResponse<PaginationList<CategoryPageResponseDto>> GetCategories();
+        ApiResponse<ProductPageResponseDto> GetProductById(int productId);
+        ApiResponse<PaginationList<ProductPageResponseDto>> GetProductsByCategoryId(int categoryId, int page, int size);
     }
 }

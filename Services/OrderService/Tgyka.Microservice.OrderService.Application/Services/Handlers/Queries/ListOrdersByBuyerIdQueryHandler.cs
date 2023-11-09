@@ -12,7 +12,7 @@ using Tgyka.Microservice.OrderService.Domain.Repositories;
 
 namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Queries
 {
-    public class ListOrdersByBuyerIdQueryHandler : IRequestHandler<ListOrdersByBuyerIdQuery, ApiResponseDto<PaginationList<OrderDto>>>
+    public class ListOrdersByBuyerIdQueryHandler : IRequestHandler<ListOrdersByBuyerIdQuery, ApiResponse<PaginationList<OrderDto>>>
     {
         private readonly IOrderRepository _orderRepository;
 
@@ -21,10 +21,10 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Queries
             _orderRepository = orderRepository;
         }
 
-        public async Task<ApiResponseDto<PaginationList<OrderDto>>> Handle(ListOrdersByBuyerIdQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<PaginationList<OrderDto>>> Handle(ListOrdersByBuyerIdQuery request, CancellationToken cancellationToken)
         {
             var data = _orderRepository.ListWithMapper<OrderDto>(predicate: r => r.BuyerId == request.BuyerId, includes: new List<System.Linq.Expressions.Expression<Func<Domain.Entities.Order, object>>> { r => r.Address, r => r.OrderItems }, page: request.Page, size: request.Size);
-            return ApiResponseDto<PaginationList<OrderDto>>.Success(200,data);
+            return ApiResponse<PaginationList<OrderDto>>.Success(200,data);
         }
     }
 }

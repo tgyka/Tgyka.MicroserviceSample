@@ -19,30 +19,30 @@ namespace Tgyka.Microservice.BasketService.Services.Implementations
             _database = ConnectionMultiplexer.Connect($"({settings.Host}:{settings.Port}").GetDatabase(settings.Database);
         }
 
-        public async Task<ApiResponseDto<BasketResponseDto>> GetBasket(int userId)
+        public async Task<ApiResponse<BasketResponseDto>> GetBasket(int userId)
         {
             var data = await _database.StringGetAsync(userId.ToString());
 
             if (string.IsNullOrEmpty(data))
             {
-                return ApiResponseDto<BasketResponseDto>.Error(404,"Basket is not found");
+                return ApiResponse<BasketResponseDto>.Error(404,"Basket is not found");
             }
 
-            return ApiResponseDto<BasketResponseDto>.Success(200, JsonSerializer.Deserialize<BasketResponseDto>(data));
+            return ApiResponse<BasketResponseDto>.Success(200, JsonSerializer.Deserialize<BasketResponseDto>(data));
         }
 
-        public async Task<ApiResponseDto<BasketResponseDto>> Upsert(BasketRequestDto request)
+        public async Task<ApiResponse<BasketResponseDto>> Upsert(BasketRequestDto request)
         {
             var result = await _database.StringSetAndGetAsync(request.UserId.ToString(),JsonSerializer.Serialize(request));
 
-            return ApiResponseDto<BasketResponseDto>.Success(200, JsonSerializer.Deserialize<BasketResponseDto>(result));
+            return ApiResponse<BasketResponseDto>.Success(200, JsonSerializer.Deserialize<BasketResponseDto>(result));
         }
 
-        public async Task<ApiResponseDto<bool>> Delete(int userId)
+        public async Task<ApiResponse<bool>> Delete(int userId)
         {
             var status = await _database.KeyDeleteAsync(userId.ToString());
 
-            return status ? ApiResponseDto<bool>.Success(204,status) : ApiResponseDto<bool>.Error(404, "Basket not found");
+            return status ? ApiResponse<bool>.Success(204,status) : ApiResponse<bool>.Error(404, "Basket not found");
         }
     }
 }

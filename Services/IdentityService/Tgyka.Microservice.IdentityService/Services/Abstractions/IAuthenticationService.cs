@@ -5,7 +5,5 @@ namespace Tgyka.Microservice.IdentityService.Services.Abstractions
 {
     public interface IAuthenticationService
     {
-        Task<string> Login(LoginModel model);
-        Task<string> Register(RegisterModel model);
     }
 }

@@ -29,19 +29,19 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
             _jwtSettings = jwtSettings;
         }
 
-        public async Task<ApiResponseDto<AuthResponseDto>> Login(LoginModel model)
+        public async Task<ApiResponse<AuthResponseDto>> Login(LoginModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
             {
-                return ApiResponseDto<AuthResponseDto>.Error(400,"User is not found");
+                return ApiResponse<AuthResponseDto>.Error(400,"User is not found");
             }
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, lockoutOnFailure: false);
 
-            return ApiResponseDto<AuthResponseDto>.Success(200,GenerateJwtToken(user));
+            return ApiResponse<AuthResponseDto>.Success(200,GenerateJwtToken(user));
         }
 
-        public async Task<ApiResponseDto<AuthResponseDto>> Register(RegisterModel model)
+        public async Task<ApiResponse<AuthResponseDto>> Register(RegisterModel model)
         {
             var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
 
@@ -49,12 +49,12 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
 
             if (result.Succeeded)
             {
-                return ApiResponseDto<AuthResponseDto>.Success(200, GenerateJwtToken(user));
+                return ApiResponse<AuthResponseDto>.Success(200, GenerateJwtToken(user));
             }
             else
             {
                 var errors = result.Errors.Select(e => e.Description);
-                return ApiResponseDto<AuthResponseDto>.Error(400,errors.ToArray());
+                return ApiResponse<AuthResponseDto>.Error(400,errors.ToArray());
             }
         }
 
@@ -65,8 +65,10 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
             var expireDate = DateTime.UtcNow.AddMinutes(30);
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new(ClaimTypes.NameIdentifier, user.Id),
+                new(ClaimTypes.Email, user.Email),
+                new(ClaimTypes.Name, user.UserName),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
                 var token = new JwtSecurityToken(

@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Tgyka.Microservice.Base.Model.ApiResponse;
 using Tgyka.Microservice.IdentityService.Data.Entities;
 using Tgyka.Microservice.IdentityService.Services.Abstractions;
+using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
 
 namespace Tgyka.Microservice.IdentityService.Services.Implementations
 {
@@ -13,9 +16,31 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
             _userManager = userManager;
         }
 
-        public void GetUser(string username)
+        public async Task<ApiResponse<ApplicationUser>> GetUserByUsername(string username)
         {
+            var user = await _userManager.FindByNameAsync(username);
 
+            return ApiResponse<ApplicationUser>.Success(200, user);
+        }
+
+        public async Task<ApiResponse<PaginationList<ApplicationUser>>> ListUsers(int page,int size)
+        {
+            var users = await _userManager.Users.Skip((page - 1) * size).Take(size).ToListAsync();
+            var count = _userManager.Users.Count();
+
+            return ApiResponse<PaginationList<ApplicationUser>>.Success(200, new PaginationList<ApplicationUser>(users, count,page,size));
+        }
+
+        public async Task<ApiResponse<ApplicationUser>> UpdateUser(ApplicationUser user)
+        {
+            await _userManager.UpdateAsync(user);
+            return ApiResponse<ApplicationUser>.Success(200, user);
+        }
+
+        public async Task<ApiResponse<string>> DeleteUser(ApplicationUser user)
+        {
+            await _userManager.DeleteAsync(user);
+            return ApiResponse<string>.Success(200, "User successfully deleted");
         }
     }
 }

@@ -26,39 +26,39 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
             _publishEndpoint = publishEndpoint;
         }
 
-        public ApiResponseDto<PaginationList<ProductGridPanelResponseDto>> ListProductsGrid(int page, int size)
+        public ApiResponse<PaginationList<ProductGridPanelResponseDto>> ListProductsGrid(int page, int size)
         {
             var data = _productRepository.ListWithMapper<ProductGridPanelResponseDto>(page: page, size: size);
-            return ApiResponseDto<PaginationList<ProductGridPanelResponseDto>>.Success(200, data);
+            return ApiResponse<PaginationList<ProductGridPanelResponseDto>>.Success(200, data);
         }
 
-        public async Task<ApiResponseDto<ProductPanelResponseDto>> CreateProduct(ProductPanelCreateRequestDto productRequest)
+        public async Task<ApiResponse<ProductPanelResponseDto>> CreateProduct(ProductPanelCreateRequestDto productRequest)
         {
             var data = await _productRepository.SetWithCommit<ProductPanelCreateRequestDto, ProductPanelResponseDto>(productRequest, CommandState.Create);
-            return ApiResponseDto<ProductPanelResponseDto>.Success(200, data);
+            return ApiResponse<ProductPanelResponseDto>.Success(200, data);
 
         }
 
-        public async Task<ApiResponseDto<ProductPanelResponseDto>> UpdateProduct(ProductPanelUpdateRequestDto productRequest)
+        public async Task<ApiResponse<ProductPanelResponseDto>> UpdateProduct(ProductPanelUpdateRequestDto productRequest)
         {
             var data = await _productRepository.SetWithCommit<ProductPanelUpdateRequestDto, ProductPanelResponseDto>(productRequest, CommandState.Update);
 
             await _publishEndpoint.Publish(new ProductUpdateEvent(data.Id, data.Name, data.Description, data.Price, data.Stock, data.CategoryId));
 
-            return ApiResponseDto<ProductPanelResponseDto>.Success(200, data);
+            return ApiResponse<ProductPanelResponseDto>.Success(200, data);
         }
 
-        public async Task<ApiResponseDto<ProductPanelResponseDto>> DeleteProduct(int productId)
+        public async Task<ApiResponse<ProductPanelResponseDto>> DeleteProduct(int productId)
         {
             var entity = _productRepository.Get(r => r.Id == productId);
             var data = await _productRepository.SetWithCommit<Product, ProductPanelResponseDto>(entity, CommandState.SoftDelete);
-            return ApiResponseDto<ProductPanelResponseDto>.Success(200, data);
+            return ApiResponse<ProductPanelResponseDto>.Success(200, data);
         }
 
-        public async Task<ApiResponseDto<PaginationList<CategorySelectBoxResponseDto>>> ListCategoriesSelectBox()
+        public async Task<ApiResponse<PaginationList<CategorySelectBoxResponseDto>>> ListCategoriesSelectBox()
         {
             var data = _categoryRepository.ListWithMapper<CategorySelectBoxResponseDto>();
-            return ApiResponseDto<PaginationList<CategorySelectBoxResponseDto>>.Success(200, data);
+            return ApiResponse<PaginationList<CategorySelectBoxResponseDto>>.Success(200, data);
         }
     }
 }

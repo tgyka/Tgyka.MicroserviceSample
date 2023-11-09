@@ -29,7 +29,7 @@ namespace Tgyka.Microservice.SearchService.Services.Implementations
             }
         }
 
-        public async Task<ApiResponseDto<List<ProductDto>>> GetProducts(string searchString,int page,int size,bool priceIsDescending)
+        public async Task<ApiResponse<List<ProductDto>>> GetProducts(string searchString,int page,int size,bool priceIsDescending)
         {
             var data = (await _client.SearchAsync<ProductDto>(s => s
                 .From((page - 1) * size)
@@ -48,33 +48,33 @@ namespace Tgyka.Microservice.SearchService.Services.Implementations
                     .Field(f => f.Field(p => p.Price).Order(priceIsDescending ? SortOrder.Descending : SortOrder.Ascending))
                 ))).Documents.ToList();
 
-            return ApiResponseDto<List<ProductDto>>.Success(200, data);
+            return ApiResponse<List<ProductDto>>.Success(200, data);
         }
 
-        public async Task<ApiResponseDto<ProductDto>> CreateProduct(ProductDto request)
+        public async Task<ApiResponse<ProductDto>> CreateProduct(ProductDto request)
         {
             var result = await _client.IndexAsync(request, i => i.Index(_elasticSetttings.DefaultIndex));
 
             if(!result.IsValid)
             {
-                return ApiResponseDto<ProductDto>.Error(400,"Error");
+                return ApiResponse<ProductDto>.Error(400,"Error");
             }
             
-            return ApiResponseDto<ProductDto>.Success(200, request);
+            return ApiResponse<ProductDto>.Success(200, request);
         }
 
-        public async Task<ApiResponseDto<ProductDto>> UpdateProduct(ProductDto request)
+        public async Task<ApiResponse<ProductDto>> UpdateProduct(ProductDto request)
         {
             var result = await _client.UpdateAsync<ProductDto>(request.Id, u => u
                   .Index(_elasticSetttings.DefaultIndex)
                   .Doc(request));
-            return ApiResponseDto<ProductDto>.Success(200, request);
+            return ApiResponse<ProductDto>.Success(200, request);
         }
 
-        public async Task<ApiResponseDto<bool>> DeleteProduct(int productId)
+        public async Task<ApiResponse<bool>> DeleteProduct(int productId)
         {
             var result = await _client.DeleteAsync<ProductDto>(productId.ToString());
-            return ApiResponseDto<bool>.Success(200, result.IsValid);
+            return ApiResponse<bool>.Success(200, result.IsValid);
         }
     }
 }

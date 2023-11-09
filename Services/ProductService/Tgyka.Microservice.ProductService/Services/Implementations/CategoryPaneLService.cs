@@ -21,30 +21,30 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
             _categoryRepository = categoryRepository;
         }
 
-        public ApiResponseDto<PaginationList<CategoryGridPanelResponseDto>> ListCategorysGrid(int page, int size)
+        public ApiResponse<PaginationList<CategoryGridPanelResponseDto>> ListCategorysGrid(int page, int size)
         {
             var data = _categoryRepository.ListWithMapper<CategoryGridPanelResponseDto>(page: page, size: size);
-            return ApiResponseDto<PaginationList<CategoryGridPanelResponseDto>>.Success(200, data);
+            return ApiResponse<PaginationList<CategoryGridPanelResponseDto>>.Success(200, data);
         }
 
-        public async Task<ApiResponseDto<CategoryPanelResponseDto>> CreateCategory(CategoryPanelCreateRequestDto categoryRequest)
+        public async Task<ApiResponse<CategoryPanelResponseDto>> CreateCategory(CategoryPanelCreateRequestDto categoryRequest)
         {
             var data = await _categoryRepository.SetWithCommit<CategoryPanelCreateRequestDto, CategoryPanelResponseDto>(categoryRequest, CommandState.Create);
-            return ApiResponseDto<CategoryPanelResponseDto>.Success(200, data);
+            return ApiResponse<CategoryPanelResponseDto>.Success(200, data);
 
         }
 
-        public async Task<ApiResponseDto<CategoryPanelResponseDto>> UpdateCategory(CategoryPanelUpdateRequestDto categoryRequest)
+        public async Task<ApiResponse<CategoryPanelResponseDto>> UpdateCategory(CategoryPanelUpdateRequestDto categoryRequest)
         {
             var data = await _categoryRepository.SetWithCommit<CategoryPanelUpdateRequestDto, CategoryPanelResponseDto>(categoryRequest, CommandState.Update);
-            return ApiResponseDto<CategoryPanelResponseDto>.Success(200, data);
+            return ApiResponse<CategoryPanelResponseDto>.Success(200, data);
         }
 
-        public async Task<ApiResponseDto<CategoryPanelResponseDto>> DeleteCategory(int categoryId)
+        public async Task<ApiResponse<CategoryPanelResponseDto>> DeleteCategory(int categoryId)
         {
             var entity = _categoryRepository.Get(r => r.Id == categoryId);
             var data = await _categoryRepository.SetWithCommit<Category, CategoryPanelResponseDto>(entity, CommandState.SoftDelete);
-            return ApiResponseDto<CategoryPanelResponseDto>.Success(200, data);
+            return ApiResponse<CategoryPanelResponseDto>.Success(200, data);
         }
     }
 }
