@@ -32,18 +32,40 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
             return ApiResponse<PaginationList<ProductGridPanelResponseDto>>.Success(200, data);
         }
 
+        public async Task<ApiResponse<PaginationList<CategorySelectBoxResponseDto>>> ListCategoriesSelectBox()
+        {
+            var data = _categoryRepository.ListWithMapper<CategorySelectBoxResponseDto>();
+            return ApiResponse<PaginationList<CategorySelectBoxResponseDto>>.Success(200, data);
+        }
+
         public async Task<ApiResponse<ProductPanelResponseDto>> CreateProduct(ProductPanelCreateRequestDto productRequest)
         {
             var data = await _productRepository.SetWithCommit<ProductPanelCreateRequestDto, ProductPanelResponseDto>(productRequest, CommandState.Create);
-            return ApiResponse<ProductPanelResponseDto>.Success(200, data);
 
+            var category = _categoryRepository.Get(r => r.Id == productRequest.CategoryId);
+
+            if(category == null)
+            {
+                ApiResponse<ProductPanelResponseDto>.Error(400,"Category is not found");
+            }
+
+            await _publishEndpoint.Publish(new ProductCreatedEvent(data.Name,data.Description,data.Price,data.Stock,data.CategoryId,category.Name));
+
+            return ApiResponse<ProductPanelResponseDto>.Success(200, data);
         }
 
         public async Task<ApiResponse<ProductPanelResponseDto>> UpdateProduct(ProductPanelUpdateRequestDto productRequest)
         {
             var data = await _productRepository.SetWithCommit<ProductPanelUpdateRequestDto, ProductPanelResponseDto>(productRequest, CommandState.Update);
 
-            await _publishEndpoint.Publish(new ProductUpdateEvent(data.Id, data.Name, data.Description, data.Price, data.Stock, data.CategoryId));
+            var category = _categoryRepository.Get(r => r.Id == productRequest.CategoryId);
+
+            if (category == null)
+            {
+                ApiResponse<ProductPanelResponseDto>.Error(400, "Category is not found");
+            }
+
+            await _publishEndpoint.Publish(new ProductUpdatedEvent(data.Id, data.Name, data.Description, data.Price, data.Stock, data.CategoryId,category.Name));
 
             return ApiResponse<ProductPanelResponseDto>.Success(200, data);
         }
@@ -52,13 +74,8 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
         {
             var entity = _productRepository.Get(r => r.Id == productId);
             var data = await _productRepository.SetWithCommit<Product, ProductPanelResponseDto>(entity, CommandState.SoftDelete);
+            await _publishEndpoint.Publish(new ProductDeletedEvent(productId));
             return ApiResponse<ProductPanelResponseDto>.Success(200, data);
-        }
-
-        public async Task<ApiResponse<PaginationList<CategorySelectBoxResponseDto>>> ListCategoriesSelectBox()
-        {
-            var data = _categoryRepository.ListWithMapper<CategorySelectBoxResponseDto>();
-            return ApiResponse<PaginationList<CategorySelectBoxResponseDto>>.Success(200, data);
         }
     }
 }

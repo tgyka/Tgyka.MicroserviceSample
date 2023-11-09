@@ -13,9 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.Base\Tgyka.Microservice.Base\Tgyka.Microservice.Base.csproj" />
     <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.MssqlBase\Tgyka.Microservice.MssqlBase.csproj" />
     <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.Rabbitmq\Tgyka.Microservice.Rabbitmq.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Settings\" />
   </ItemGroup>
 
 </Project>

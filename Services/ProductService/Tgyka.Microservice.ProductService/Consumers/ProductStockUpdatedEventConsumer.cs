@@ -26,7 +26,7 @@ namespace Tgyka.Microservice.ProductService.Consumers
 
             if(product == null)
             {
-
+                return;
             }
 
             if(product.Stock <= 0)

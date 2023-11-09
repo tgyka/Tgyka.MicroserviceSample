@@ -12,7 +12,7 @@ using Tgyka.Microservice.Rabbitmq.Events;
 
 namespace Tgyka.Microservice.OrderService.Application.Consumers
 {
-    internal class ProductStockNotReservedEventConsumer : IConsumer<ProductStockNotReservedEvent>
+    public class ProductStockNotReservedEventConsumer : IConsumer<ProductStockNotReservedEvent>
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IUnitOfWork _unitOfWork;

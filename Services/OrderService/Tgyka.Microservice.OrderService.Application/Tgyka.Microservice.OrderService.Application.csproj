@@ -11,7 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.Base\Tgyka.Microservice.Base\Tgyka.Microservice.Base.csproj" />
     <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.Rabbitmq\Tgyka.Microservice.Rabbitmq.csproj" />
     <ProjectReference Include="..\Tgyka.Microservice.OrderService.Domain\Tgyka.Microservice.OrderService.Domain.csproj" />
     <ProjectReference Include="..\Tgyka.Microservice.OrderService.Infrastructure\Tgyka.Microservice.OrderService.Infrastructure.csproj" />

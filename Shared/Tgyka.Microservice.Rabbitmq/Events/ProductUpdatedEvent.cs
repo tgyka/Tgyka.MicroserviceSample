@@ -6,16 +6,17 @@ using System.Threading.Tasks;
 
 namespace Tgyka.Microservice.Rabbitmq.Events
 {
-    public class ProductUpdateEvent
+    public class ProductUpdatedEvent
     {
-        public ProductUpdateEvent(int id, string name, string description, int price, int stock, int categoryId)
+        public ProductUpdatedEvent(int ıd, string name, string description, int price, int stock, int categoryId, string categoryName)
         {
-            Id = id;
+            Id = ıd;
             Name = name;
             Description = description;
             Price = price;
             Stock = stock;
             CategoryId = categoryId;
+            CategoryName = categoryName;
         }
 
         public int Id { get; set; }
@@ -24,5 +25,6 @@ namespace Tgyka.Microservice.Rabbitmq.Events
         public int Price { get; set; }
         public int Stock { get; set; }
         public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
     }
 }

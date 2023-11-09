@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Tgyka.Microservice.ProductService;
 using Tgyka.Microservice.ProductService.Consumers;
 using Tgyka.Microservice.ProductService.Data;
-using Tgyka.Microservice.ProductService.Settings;
+using Tgyka.Microservice.Rabbitmq.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
