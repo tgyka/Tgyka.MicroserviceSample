@@ -4,7 +4,7 @@ using Tgyka.Microservice.ProductService.Model.Dtos.Category.Requests;
 using Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses;
 using Tgyka.Microservice.ProductService.Model.Dtos.Product.Requests;
 
-namespace Tgyka.Microservice.ProductService.Mappings.Profilers
+namespace Tgyka.Microservice.ProductService.Mappings.Profiles
 {
     public class CategoryProfile: Profile
     {

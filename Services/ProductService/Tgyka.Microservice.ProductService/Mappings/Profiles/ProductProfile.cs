@@ -3,7 +3,7 @@ using Tgyka.Microservice.ProductService.Data.Entities;
 using Tgyka.Microservice.ProductService.Model.Dtos.Product.Requests;
 using Tgyka.Microservice.ProductService.Model.Dtos.Product.Responses;
 
-namespace Tgyka.Microservice.ProductService.Mappings.Profilers
+namespace Tgyka.Microservice.ProductService.Mappings.Profiles
 {
     public class ProductProfile: Profile
     {

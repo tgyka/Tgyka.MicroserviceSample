@@ -9,7 +9,7 @@ namespace Tgyka.Microservice.OrderService.Domain.Entities
 {
     public class Order : BaseEntity
     {
-        public int BuyerId { get; set; }
+        public string BuyerId { get; set; }
         public DateTime CreatedDate { get; set; }
         public List<OrderItem> OrderItems { get; set; }
         public OrderStatus Status { get; set; }

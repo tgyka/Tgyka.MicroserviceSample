@@ -1,0 +1,14 @@
+﻿using AutoMapper;
+using Tgyka.Microservice.OrderService.Application.Models.Dtos.OrderItem;
+using Tgyka.Microservice.OrderService.Domain.Entities;
+
+namespace Tgyka.Microservice.OrderService.Application.Mappings.Profiles
+{
+    public class OrderItemProfile: Profile
+    {
+        public OrderItemProfile()
+        {
+            CreateMap<OrderItemDto, OrderItem>().ReverseMap();
+        }
+    }
+}

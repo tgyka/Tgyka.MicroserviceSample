@@ -12,7 +12,7 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Queries
 {
     public class ListOrdersByBuyerIdQuery: IRequest<ApiResponse<PaginationList<OrderDto>>>
     {
-        public int BuyerId { get; set; }
+        public string BuyerId { get; set; }
         public int Page { get; set; }
         public int Size { get; set; }
 

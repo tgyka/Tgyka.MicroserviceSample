@@ -1,7 +1,13 @@
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Tgyka.Microservice.OrderService.Api;
 using Tgyka.Microservice.OrderService.Application.Consumers;
+using Tgyka.Microservice.OrderService.Application.Services.Commands;
+using Tgyka.Microservice.OrderService.Infrastructure;
 using Tgyka.Microservice.Rabbitmq.Events;
 using Tgyka.Microservice.Rabbitmq.Settings;
+using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +17,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddThisDbContext();
+builder.Services.AddRepositories();
 
 builder.Services.AddMassTransit(x =>
 {
@@ -33,6 +43,9 @@ builder.Services.AddMassTransit(x =>
 
     });
 });
+builder.Services.AddDbContext<OrderServiceDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+
 
 var app = builder.Build();
 
