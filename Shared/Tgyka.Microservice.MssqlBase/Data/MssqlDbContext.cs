@@ -9,5 +9,8 @@ namespace Tgyka.Microservice.MssqlBase.Data
 {
     public class MssqlDbContext : DbContext
     {
+        public MssqlDbContext(DbContextOptions options) : base(options)
+        {
+        }
     }
 }

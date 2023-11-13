@@ -10,16 +10,16 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : BaseEntity
     {
-        private readonly MssqlDbContext _dbContext;
-        private readonly DbSet<TEntity> _dbSet;
-        private readonly IUnitOfWork _unitofWork;
-        private readonly IMapper _mapper;
+        protected readonly MssqlDbContext _dbContext;
+        protected readonly DbSet<TEntity> _dbSet;
+        protected readonly IUnitOfWork _unitOfWork;
+        protected readonly IMapper _mapper;
 
         public BaseRepository(MssqlDbContext dbContext, IUnitOfWork unitofWork, IMapper mapper)
         {
             _dbContext = dbContext;
             _dbSet = _dbContext.Set<TEntity>();
-            _unitofWork = unitofWork;
+            _unitOfWork = unitofWork;
             _mapper = mapper;
         }
 
@@ -48,6 +48,13 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
             if(state == CommandState.SoftDelete)
             {
                 entity.IsDeleted = true;
+            }
+
+            if(state == CommandState.Update)
+            {
+                var olderEntity = Get(r => r.Id == entity.Id);
+                entity.CreatedBy = olderEntity.CreatedBy;
+                entity.CreatedDate = olderEntity.CreatedDate;
             }
 
             _dbSet.Entry(entity).State = GetEntityStateFromCommandState(state);
@@ -80,7 +87,7 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
         {
             var entity = _mapper.Map<TEntity>(request);
             var entityResponse = Set(entity, state);
-            await _unitofWork.CommitAsync();
+            await _dbContext.SaveChangesAsync();
             return _mapper.Map<TMapped>(entityResponse);
         }
 
@@ -88,7 +95,7 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
         {
             var entities = _mapper.Map<IEnumerable<TEntity>>(requests);
             var entitiesResponse = Set(entities, state);
-            await _unitofWork.CommitAsync();
+            await _dbContext.SaveChangesAsync();
             return _mapper.Map<List<TMapped>>(entitiesResponse);
         }
 

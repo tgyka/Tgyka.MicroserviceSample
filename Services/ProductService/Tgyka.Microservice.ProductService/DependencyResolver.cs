@@ -1,5 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
+using Tgyka.Microservice.MssqlBase.Data;
 using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
+using Tgyka.Microservice.ProductService.Data;
 using Tgyka.Microservice.ProductService.Data.Repositories.Abstractions;
 using Tgyka.Microservice.ProductService.Data.Repositories.Implementations;
 using Tgyka.Microservice.ProductService.Services.Abstractions;
@@ -39,6 +41,9 @@ namespace Tgyka.Microservice.ProductService
                 });
             });
         }
+
+        public static void AddThisDbContext(this IServiceCollection services) => services.AddTransient<MssqlDbContext, ProductServiceDbContext>();
+
         public static void AddServices(this IServiceCollection services)
         {
             services.AddScoped<ICategoryPanelService, CategoryPanelService>();

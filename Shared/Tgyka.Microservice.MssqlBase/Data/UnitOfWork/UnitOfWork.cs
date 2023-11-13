@@ -9,9 +9,7 @@
             _dbContext = dbContext;
         }
 
-        public async Task CommitAsync()
-        {
-            await _dbContext.SaveChangesAsync();
-        }
+        public Task CommitAsync() => _dbContext.SaveChangesAsync();
+
     }
 }

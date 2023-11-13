@@ -8,7 +8,7 @@ namespace Tgyka.Microservice.MssqlBase.Model.RepositoryDtos
 {
     public class PaginationList<T>
     {
-        public PaginationList(List<T> dataList, int count, int page, int size)
+        public PaginationList(IEnumerable<T> dataList, int count, int page, int size)
         {
             DataList = dataList;
             Count = count;
@@ -16,7 +16,7 @@ namespace Tgyka.Microservice.MssqlBase.Model.RepositoryDtos
             Size = size;
         }
 
-        public List<T> DataList { get; set; }
+        public IEnumerable<T> DataList { get; set; }
         public int Count { get; set; }
         public int Page { get; set; }
         public int Size { get; set; }

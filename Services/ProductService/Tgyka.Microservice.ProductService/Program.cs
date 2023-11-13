@@ -1,5 +1,7 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Tgyka.Microservice.Base.M�ddlewares;
+using Tgyka.Microservice.MssqlBase.Data;
 using Tgyka.Microservice.ProductService;
 using Tgyka.Microservice.ProductService.Consumers;
 using Tgyka.Microservice.ProductService.Data;
@@ -12,12 +14,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwagger();
-builder.Services.AddServices();
-builder.Services.AddRepositories();
+
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddDbContext<ProductServiceDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Mssql")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
+builder.Services.AddThisDbContext();
+builder.Services.AddServices();
+builder.Services.AddRepositories();
 
 builder.Services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
@@ -57,6 +61,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
