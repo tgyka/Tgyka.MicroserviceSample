@@ -6,6 +6,8 @@ using Tgyka.Microservice.OrderService.Application.Services.Queries;
 
 namespace Tgyka.Microservice.OrderService.Api.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class OrdersController: TgykaMicroserviceControllerBase
     {
         private readonly IMediator _mediator;
@@ -16,7 +18,7 @@ namespace Tgyka.Microservice.OrderService.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ListOrdersByBuyerId(int buyerId, int page , int size)
+        public async Task<IActionResult> ListOrdersByBuyerId(string buyerId, int page , int size)
         {
             return ApiActionResult(await _mediator.Send(new ListOrdersByBuyerIdQuery { BuyerId = buyerId, Page = page, Size = size }));
         }

@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Tgyka.Microservice.OrderService.Domain\Tgyka.Microservice.OrderService.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configurations\" />
-  </ItemGroup>
-
 </Project>

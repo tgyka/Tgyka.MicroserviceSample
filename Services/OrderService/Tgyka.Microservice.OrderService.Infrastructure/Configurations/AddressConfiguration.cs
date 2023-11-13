@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 using Tgyka.Microservice.OrderService.Domain.Entities;
@@ -23,6 +25,11 @@ namespace Tgyka.Microservice.OrderService.Infrastructure.Configurations
 
             builder.Property(x => x.CreatedBy).IsRequired().HasMaxLength(200);
             builder.Property(x => x.ModifiedBy).HasMaxLength(200);
+
+            builder.HasOne(e => e.Order)
+            .WithOne(e => e.Address)
+            .HasForeignKey<Order>(e => e.AddressId)
+            .IsRequired();
         }
     }
 }

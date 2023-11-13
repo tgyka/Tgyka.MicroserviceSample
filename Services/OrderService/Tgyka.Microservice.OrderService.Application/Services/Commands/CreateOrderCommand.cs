@@ -15,7 +15,7 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Commands
 {
     public class CreateOrderCommand: IRequest<ApiResponse<OrderDto>>
     {
-        public string BuyerId { get; set; }
+        public string BuyerId => "system";
 
         public List<OrderItemDto> OrderItems { get; set; }
 
