@@ -1,16 +1,12 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Tgyka.Microservice.Base.M�ddlewares;
+using Tgyka.Microservice.Base.Middlewares;
 using Tgyka.Microservice.OrderService.Api;
 using Tgyka.Microservice.OrderService.Application.Consumers;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
 using Tgyka.Microservice.OrderService.Application.Services.Commands;
 using Tgyka.Microservice.OrderService.Infrastructure;
-using Tgyka.Microservice.Rabbitmq.Events;
 using Tgyka.Microservice.Rabbitmq.Settings;
-using static System.Net.Mime.MediaTypeNames;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,19 +22,13 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Creat
 builder.Services.AddThisDbContext();
 builder.Services.AddRepositories();
 
-builder.Services.AddDbContext<OrderServiceDbContext>(opt =>
-{
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"), configure =>
-    {
-        configure.MigrationsAssembly("Tgyka.Microservice.OrderService.Infrastructure");
-    });
-});
 
-        cfg.Host(rabbitmqSettings.Uri, "/", host =>
-        {
-            host.Username(rabbitmqSettings.Username);
-            host.Password(rabbitmqSettings.Password);
-        });
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<ProductStockNotReservedEventConsumer>();
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration.GetValue<string>("RabbitMqUri"));
 
         cfg.ReceiveEndpoint("product-stock-not-reserveds", e =>
         {
@@ -47,9 +37,14 @@ builder.Services.AddDbContext<OrderServiceDbContext>(opt =>
 
     });
 });
-builder.Services.AddDbContext<OrderServiceDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
 
+builder.Services.AddDbContext<OrderServiceDbContext>(opt =>
+{
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"), configure =>
+    {
+        configure.MigrationsAssembly("Tgyka.Microservice.OrderService.Infrastructure");
+    });
+});
 
 var app = builder.Build();
 
@@ -60,7 +55,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<ExceptionMiddleware>();
+//app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

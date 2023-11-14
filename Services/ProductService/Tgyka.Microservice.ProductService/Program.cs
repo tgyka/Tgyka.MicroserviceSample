@@ -1,7 +1,7 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Tgyka.Microservice.Base.M�ddlewares;
-using Tgyka.Microservice.MssqlBase.Data;
+using Microsoft.Extensions.Configuration;
+using Tgyka.Microservice.Base.Middlewares;
 using Tgyka.Microservice.ProductService;
 using Tgyka.Microservice.ProductService.Consumers;
 using Tgyka.Microservice.ProductService.Data;
@@ -35,14 +35,7 @@ builder.Services.AddMassTransit(x =>
     x.AddConsumer<ProductStockUpdatedEventConsumer>();
     x.UsingRabbitMq((context, cfg) =>
     {
-        RabbitmqSettings rabbitmqSettings = new();
-        builder.Configuration.GetSection("Rabbitmq").Bind(rabbitmqSettings);
-
-        cfg.Host(rabbitmqSettings.Uri, "/", host =>
-        {
-            host.Username(rabbitmqSettings.Username);
-            host.Password(rabbitmqSettings.Password);
-        });
+        cfg.Host(builder.Configuration.GetValue<string>("RabbitMqUri"));
 
         cfg.ReceiveEndpoint("product-stock-updated", e =>
         {
@@ -61,7 +54,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<ExceptionMiddleware>();
+//app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

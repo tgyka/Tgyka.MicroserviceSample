@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tgyka.Microservice.Base.Mİddlewares
+namespace Tgyka.Microservice.Base.Middlewares
 {
     public class ExceptionMiddleware
     {

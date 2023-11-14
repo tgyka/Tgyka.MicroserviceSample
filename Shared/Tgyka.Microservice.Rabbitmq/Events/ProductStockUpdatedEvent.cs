@@ -2,13 +2,13 @@
 {
     public class ProductStockUpdatedEvent
     {
-        public ProductStockUpdatedEvent(int productId, int orderId)
+        public ProductStockUpdatedEvent(int[] productIds, int orderId)
         {
-            ProductId = productId;
+            ProductIds = productIds;
             OrderId = orderId;
         }
 
-        public int ProductId { get; set; }
+        public int[] ProductIds { get; set; }
         public int OrderId { get; set; }
     }
 }

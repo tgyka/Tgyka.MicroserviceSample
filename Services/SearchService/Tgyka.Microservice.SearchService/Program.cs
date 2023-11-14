@@ -11,40 +11,40 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddMassTransit(x =>
-{
-    x.AddConsumer<ProductCreatedEventConsumer>();
-    x.AddConsumer<ProductUpdatedEventConsumer>();
-    x.AddConsumer<ProductDeletedEventConsumer>();
+//builder.Services.AddMassTransit(x =>
+//{
+//    x.AddConsumer<ProductCreatedEventConsumer>();
+//    x.AddConsumer<ProductUpdatedEventConsumer>();
+//    x.AddConsumer<ProductDeletedEventConsumer>();
 
-    x.UsingRabbitMq((context, cfg) =>
-    {
-        RabbitmqSettings rabbitmqSettings = new();
-        builder.Configuration.GetSection("Rabbitmq").Bind(rabbitmqSettings);
+//    x.UsingRabbitMq((context, cfg) =>
+//    {
+//        RabbitmqSettings rabbitmqSettings = new();
+//        builder.Configuration.GetSection("Rabbitmq").Bind(rabbitmqSettings);
 
-        cfg.Host(rabbitmqSettings.Uri, "/", host =>
-        {
-            host.Username(rabbitmqSettings.Username);
-            host.Password(rabbitmqSettings.Password);
-        });
+//        cfg.Host(rabbitmqSettings.Uri, "/", host =>
+//        {
+//            host.Username(rabbitmqSettings.Username);
+//            host.Password(rabbitmqSettings.Password);
+//        });
 
-        cfg.ReceiveEndpoint("product-created", e =>
-        {
-            e.ConfigureConsumer<ProductCreatedEventConsumer>(context);
-        });
+//        cfg.ReceiveEndpoint("product-created", e =>
+//        {
+//            e.ConfigureConsumer<ProductCreatedEventConsumer>(context);
+//        });
 
-        cfg.ReceiveEndpoint("product-updated", e =>
-        {
-            e.ConfigureConsumer<ProductUpdatedEventConsumer>(context);
-        });
+//        cfg.ReceiveEndpoint("product-updated", e =>
+//        {
+//            e.ConfigureConsumer<ProductUpdatedEventConsumer>(context);
+//        });
 
-        cfg.ReceiveEndpoint("product-deleted", e =>
-        {
-            e.ConfigureConsumer<ProductDeletedEventConsumer>(context);
-        });
+//        cfg.ReceiveEndpoint("product-deleted", e =>
+//        {
+//            e.ConfigureConsumer<ProductDeletedEventConsumer>(context);
+//        });
 
-    });
-});
+//    });
+//});
 
 
 var app = builder.Build();

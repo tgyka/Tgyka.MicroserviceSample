@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
+using Tgyka.Microservice.ProductService.Data.Entities;
 using Tgyka.Microservice.ProductService.Data.Repositories.Abstractions;
 using Tgyka.Microservice.Rabbitmq.Events;
 
@@ -21,22 +22,27 @@ namespace Tgyka.Microservice.ProductService.Consumers
 
         public async Task Consume(ConsumeContext<ProductStockUpdatedEvent> context)
         {
-            var productId = context.Message.ProductId;
-            var product = _productRepository.Get(r => r.Id == productId);
+            var productIds = context.Message.ProductIds;
+            var products = _productRepository.List(r => productIds.Contains(r.Id));
 
-            if(product == null)
+            if(products == null || products.Count == 0)
             {
                 return;
             }
 
-            if(product.Stock <= 0)
+            foreach(var product in products.DataList)
             {
-                await _publishEndpoint.Publish(new ProductStockNotReservedEvent(productId,context.Message.OrderId));
-                return;
+                if (product.Stock <= 0)
+                {
+                    await _publishEndpoint.Publish(new ProductStockNotReservedEvent(product.Id, context.Message.OrderId));
+                    products.DataList = products.DataList.Where(r => r.Id != product.Id).ToList();
+                    continue;
+                }
+
+                product.Stock = -1;
             }
 
-            product.Stock = -1;
-            _productRepository.Set(product,CommandState.Update);
+            _productRepository.Set(products.DataList,CommandState.Update);
             await _unitOfWork.CommitAsync();
         }
     }

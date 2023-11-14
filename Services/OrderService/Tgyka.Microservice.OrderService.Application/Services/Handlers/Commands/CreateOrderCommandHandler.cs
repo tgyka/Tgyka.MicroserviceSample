@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MassTransit;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using Tgyka.Microservice.OrderService.Application.Models.Dtos.OrderItem;
 using Tgyka.Microservice.OrderService.Application.Services.Commands;
 using Tgyka.Microservice.OrderService.Domain.Entities;
 using Tgyka.Microservice.OrderService.Domain.Repositories;
+using Tgyka.Microservice.Rabbitmq.Events;
 
 namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Commands
 {
@@ -23,14 +25,16 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Commands
         IOrderItemRepository _orderItemRepository;
         IUnitOfWork _unitOfWork;
         IMapper _mapper;
+        IPublishEndpoint _publishEndpoint;
 
-        public CreateOrderCommandHandler(IOrderRepository orderRepository, IAddressRepository addressRepository, IOrderItemRepository orderItemRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateOrderCommandHandler(IOrderRepository orderRepository, IAddressRepository addressRepository, IOrderItemRepository orderItemRepository, IUnitOfWork unitOfWork, IMapper mapper, IPublishEndpoint publishEndpoint)
         {
             _orderRepository = orderRepository;
             _addressRepository = addressRepository;
             _orderItemRepository = orderItemRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<ApiResponse<OrderDto>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -41,6 +45,8 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Commands
             _addressRepository.Set(order.Address, CommandState.Create);
             _orderRepository.Set(order, CommandState.Create);
             await _unitOfWork.CommitAsync();
+
+            await _publishEndpoint.Publish(new ProductStockUpdatedEvent(order.OrderItems.Select(r => r.Id).ToArray(), order.Id));
 
             return ApiResponse<OrderDto>.Success(201,_mapper.Map<OrderDto>(order));
         }
