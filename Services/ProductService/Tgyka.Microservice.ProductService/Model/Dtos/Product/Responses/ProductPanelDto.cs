@@ -2,7 +2,7 @@
 
 namespace Tgyka.Microservice.ProductService.Model.Dtos.Product.Responses
 {
-    public class ProductPanelResponseDto: GetDto
+    public class ProductPanelDto: GetDto
     {
         public string Name { get; set; }
         public string Description { get; set; }

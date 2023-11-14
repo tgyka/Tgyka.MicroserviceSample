@@ -21,23 +21,23 @@ namespace Tgyka.Microservice.BasketService.Services.Implementations
             _database = RedisConnectionHelper.GetConnection(_settings).GetDatabase(_settings.Database);
         }
 
-        public async Task<ApiResponse<BasketResponseDto>> GetBasket(string userId)
+        public async Task<ApiResponse<BasketDto>> GetBasket(string userId)
         {
             var data = await _database.StringGetAsync(userId);
 
             if (string.IsNullOrEmpty(data))
             {
-                return ApiResponse<BasketResponseDto>.Error(404,"Basket is not found");
+                return ApiResponse<BasketDto>.Error(404,"Basket is not found");
             }
 
-            return ApiResponse<BasketResponseDto>.Success(200, JsonSerializer.Deserialize<BasketResponseDto>(data));
+            return ApiResponse<BasketDto>.Success(200, JsonSerializer.Deserialize<BasketDto>(data));
         }
 
-        public async Task<ApiResponse<BasketResponseDto>> Upsert(BasketRequestDto request)
+        public async Task<ApiResponse<BasketDto>> Upsert(BasketUpsertDto request)
         {
             var result = await _database.StringSetAndGetAsync(request.UserId,JsonSerializer.Serialize(request));
 
-            return ApiResponse<BasketResponseDto>.Success(200, JsonSerializer.Deserialize<BasketResponseDto>(result.ToString()));
+            return ApiResponse<BasketDto>.Success(200, JsonSerializer.Deserialize<BasketDto>(result.ToString()));
         }
 
         public async Task<ApiResponse<bool>> Delete(string userId)

@@ -1,6 +1,6 @@
 ﻿namespace Tgyka.Microservice.BasketService.Models.Dtos
 {
-    public class BasketRequestDto
+    public class BasketUpsertDto
     {
         public string UserId { get; set; }
         public List<BasketItemDto> Items { get; set; }
