@@ -1,6 +1,6 @@
 ﻿namespace Tgyka.Microservice.IdentityService.Models
 {
-    public class AuthResponseDto
+    public class AuthModel
     {
         public string Id { get; set; }
         public string Username { get; set; }

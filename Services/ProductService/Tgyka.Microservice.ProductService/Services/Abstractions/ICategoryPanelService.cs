@@ -7,9 +7,9 @@ namespace Tgyka.Microservice.ProductService.Services.Abstractions
 {
     public interface ICategoryPanelService
     {
-        Task<ApiResponse<CategoryPanelResponseDto>> CreateCategory(CategoryPanelCreateRequestDto categoryRequest);
-        Task<ApiResponse<CategoryPanelResponseDto>> DeleteCategory(int categoryId);
-        ApiResponse<PaginationList<CategoryGridPanelResponseDto>> ListCategorysGrid(int page, int size);
-        Task<ApiResponse<CategoryPanelResponseDto>> UpdateCategory(CategoryPanelUpdateRequestDto categoryRequest);
+        Task<ApiResponse<CategoryPanelDto>> CreateCategory(CategoryPanelCreateDto categoryRequest);
+        Task<ApiResponse<CategoryPanelDto>> DeleteCategory(int categoryId);
+        ApiResponse<PaginationList<CategoryGridPanelDto>> ListCategorysGrid(int page, int size);
+        Task<ApiResponse<CategoryPanelDto>> UpdateCategory(CategoryPanelUpdateDto categoryRequest);
     }
 }

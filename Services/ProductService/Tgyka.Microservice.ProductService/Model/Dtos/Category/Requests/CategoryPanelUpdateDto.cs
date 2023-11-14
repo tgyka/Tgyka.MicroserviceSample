@@ -1,8 +1,8 @@
 ﻿using Tgyka.Microservice.MssqlBase.Model.Dtos;
 
-namespace Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses
+namespace Tgyka.Microservice.ProductService.Model.Dtos.Category.Requests
 {
-    public class CategoryPageResponseDto: GetDto
+    public class CategoryPanelUpdateDto : UpdateDto
     {
         public string Name { get; set; }
         public string Description { get; set; }

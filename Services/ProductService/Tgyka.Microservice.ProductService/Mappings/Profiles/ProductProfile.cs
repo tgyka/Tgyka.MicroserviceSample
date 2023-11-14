@@ -10,11 +10,11 @@ namespace Tgyka.Microservice.ProductService.Mappings.Profiles
         public ProductProfile()
         {
 
-            CreateMap<Product, ProductPanelCreateRequestDto>().ReverseMap();
-            CreateMap<Product, ProductPanelUpdateRequestDto>().ReverseMap();
-            CreateMap<Product, ProductGridPanelResponseDto>().ReverseMap();
-            CreateMap<Product, ProductPageResponseDto>().ReverseMap();
-            CreateMap<Product, ProductPanelResponseDto>().ReverseMap();
+            CreateMap<Product, ProductPanelCreateDto>().ReverseMap();
+            CreateMap<Product, ProductPanelUpdateDto>().ReverseMap();
+            CreateMap<Product, ProductGridPanelDto>().ReverseMap();
+            CreateMap<Product, ProductPageDto>().ReverseMap();
+            CreateMap<Product, ProductPanelDto>().ReverseMap();
         }
     }
 }

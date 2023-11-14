@@ -10,12 +10,12 @@ namespace Tgyka.Microservice.ProductService.Mappings.Profiles
     {
         public CategoryProfile()
         {
-            CreateMap<Category, CategoryPanelCreateRequestDto>().ReverseMap();
-            CreateMap<Category, CategoryPanelUpdateRequestDto>().ReverseMap();
-            CreateMap<Category, CategoryGridPanelResponseDto>().ReverseMap();
-            CreateMap<Category, CategoryPageResponseDto>().ReverseMap();
-            CreateMap<Category, CategoryPanelResponseDto>().ReverseMap();
-            CreateMap<Category, CategorySelectBoxResponseDto>().ReverseMap();
+            CreateMap<Category, CategoryPanelCreateDto>().ReverseMap();
+            CreateMap<Category, CategoryPanelUpdateDto>().ReverseMap();
+            CreateMap<Category, CategoryGridPanelDto>().ReverseMap();
+            CreateMap<Category, CategoryPageDto>().ReverseMap();
+            CreateMap<Category, CategoryPanelDto>().ReverseMap();
+            CreateMap<Category, CategorySelectBoxDto>().ReverseMap();
         }
     }
 }

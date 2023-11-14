@@ -26,56 +26,56 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
             _publishEndpoint = publishEndpoint;
         }
 
-        public ApiResponse<PaginationList<ProductGridPanelResponseDto>> ListProductsGrid(int page, int size)
+        public ApiResponse<PaginationList<ProductGridPanelDto>> ListProductsGrid(int page, int size)
         {
-            var data = _productRepository.ListWithMapper<ProductGridPanelResponseDto>(page: page, size: size);
-            return ApiResponse<PaginationList<ProductGridPanelResponseDto>>.Success(200, data);
+            var data = _productRepository.ListWithMapper<ProductGridPanelDto>(page: page, size: size);
+            return ApiResponse<PaginationList<ProductGridPanelDto>>.Success(200, data);
         }
 
-        public async Task<ApiResponse<PaginationList<CategorySelectBoxResponseDto>>> ListCategoriesSelectBox()
+        public async Task<ApiResponse<PaginationList<CategorySelectBoxDto>>> ListCategoriesSelectBox()
         {
-            var data = _categoryRepository.ListWithMapper<CategorySelectBoxResponseDto>();
-            return ApiResponse<PaginationList<CategorySelectBoxResponseDto>>.Success(200, data);
+            var data = _categoryRepository.ListWithMapper<CategorySelectBoxDto>();
+            return ApiResponse<PaginationList<CategorySelectBoxDto>>.Success(200, data);
         }
 
-        public async Task<ApiResponse<ProductPanelResponseDto>> CreateProduct(ProductPanelCreateRequestDto productRequest)
+        public async Task<ApiResponse<ProductPanelDto>> CreateProduct(ProductPanelCreateDto productRequest)
         {
-            var data = await _productRepository.SetWithCommit<ProductPanelCreateRequestDto, ProductPanelResponseDto>(productRequest, CommandState.Create);
+            var data = await _productRepository.SetWithCommit<ProductPanelCreateDto, ProductPanelDto>(productRequest, CommandState.Create);
 
             var category = _categoryRepository.Get(r => r.Id == productRequest.CategoryId);
 
             if(category == null)
             {
-                ApiResponse<ProductPanelResponseDto>.Error(400,"Category is not found");
+                ApiResponse<ProductPanelDto>.Error(400,"Category is not found");
             }
 
             await _publishEndpoint.Publish(new ProductCreatedEvent(data.Name,data.Description,data.Price,data.Stock,data.CategoryId,category.Name));
 
-            return ApiResponse<ProductPanelResponseDto>.Success(200, data);
+            return ApiResponse<ProductPanelDto>.Success(200, data);
         }
 
-        public async Task<ApiResponse<ProductPanelResponseDto>> UpdateProduct(ProductPanelUpdateRequestDto productRequest)
+        public async Task<ApiResponse<ProductPanelDto>> UpdateProduct(ProductPanelUpdateDto productRequest)
         {
-            var data = await _productRepository.SetWithCommit<ProductPanelUpdateRequestDto, ProductPanelResponseDto>(productRequest, CommandState.Update);
+            var data = await _productRepository.SetWithCommit<ProductPanelUpdateDto, ProductPanelDto>(productRequest, CommandState.Update);
 
             var category = _categoryRepository.Get(r => r.Id == productRequest.CategoryId);
 
             if (category == null)
             {
-                ApiResponse<ProductPanelResponseDto>.Error(400, "Category is not found");
+                ApiResponse<ProductPanelDto>.Error(400, "Category is not found");
             }
 
             await _publishEndpoint.Publish(new ProductUpdatedEvent(data.Id, data.Name, data.Description, data.Price, data.Stock, data.CategoryId,category.Name));
 
-            return ApiResponse<ProductPanelResponseDto>.Success(200, data);
+            return ApiResponse<ProductPanelDto>.Success(200, data);
         }
 
-        public async Task<ApiResponse<ProductPanelResponseDto>> DeleteProduct(int productId)
+        public async Task<ApiResponse<ProductPanelDto>> DeleteProduct(int productId)
         {
             var entity = _productRepository.Get(r => r.Id == productId);
-            var data = await _productRepository.SetWithCommit<Product, ProductPanelResponseDto>(entity, CommandState.SoftDelete);
+            var data = await _productRepository.SetWithCommit<Product, ProductPanelDto>(entity, CommandState.SoftDelete);
             await _publishEndpoint.Publish(new ProductDeletedEvent(productId));
-            return ApiResponse<ProductPanelResponseDto>.Success(200, data);
+            return ApiResponse<ProductPanelDto>.Success(200, data);
         }
     }
 }
