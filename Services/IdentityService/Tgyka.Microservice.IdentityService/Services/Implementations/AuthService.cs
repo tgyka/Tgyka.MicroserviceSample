@@ -13,20 +13,21 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using Tgyka.Microservice.IdentityService.Settings;
 using Tgyka.Microservice.Base.Model.ApiResponse;
+using Microsoft.Extensions.Options;
 
 namespace Tgyka.Microservice.IdentityService.Services.Implementations
 {
-    public class AuthenticationService: IAuthenticationService
+    public class AuthService: IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly JwtSettings _jwtSettings;
 
-        public AuthenticationService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, JwtSettings jwtSettings)
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IOptions<JwtSettings> jwtSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _jwtSettings = jwtSettings;
+            _jwtSettings = jwtSettings.Value;
         }
 
         public async Task<ApiResponse<AuthResponseDto>> Login(LoginModel model)

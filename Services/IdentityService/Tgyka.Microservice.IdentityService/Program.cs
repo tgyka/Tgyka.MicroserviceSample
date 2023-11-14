@@ -6,6 +6,7 @@ using System.Text;
 using Tgyka.Microservice.IdentityService.Data.Entities;
 using Tgyka.Microservice.IdentityService.Data;
 using Microsoft.EntityFrameworkCore;
+using Tgyka.Microservice.IdentityService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +16,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddSwagger();
+builder.Services.AddServices();
+builder.Services.AddSettings(builder.Configuration);
 // For Entity Framework  
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Mssql")));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
 
 // For Identity  
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()

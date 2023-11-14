@@ -11,23 +11,23 @@ namespace Tgyka.Microservice.IdentityService.Controllers
     [ApiController]
     public class AuthenticationController : TgykaMicroserviceControllerBase
     {
-        private readonly IAuthenticationService _authenticationService;
+        private readonly IAuthService _authService;
 
-        public AuthenticationController(IAuthenticationService authenticationService)
+        public AuthenticationController(IAuthService authenticationService)
         {
-            _authenticationService = authenticationService;
+            _authService = authenticationService;
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            return ApiActionResult(await _authenticationService.Login(model));
+            return ApiActionResult(await _authService.Login(model));
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            return ApiActionResult(await _authenticationService.Register(model));
+            return ApiActionResult(await _authService.Register(model));
         }
     }
 }
