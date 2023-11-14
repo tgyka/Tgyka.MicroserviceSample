@@ -21,7 +21,7 @@ namespace Tgyka.Microservice.BasketService.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int userId)
+        public async Task<IActionResult> Get(string userId)
         {
             return ApiActionResult(await _basketService.GetBasket(userId));
         }
@@ -33,7 +33,7 @@ namespace Tgyka.Microservice.BasketService.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete(int userId)
+        public async Task<IActionResult> Delete(string userId)
         {
             return ApiActionResult(await _basketService.Delete(userId));
         }

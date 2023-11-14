@@ -2,7 +2,7 @@
 {
     public class BasketRequestDto
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public List<BasketItemDto> Items { get; set; }
         public int ItemsCount
         {
