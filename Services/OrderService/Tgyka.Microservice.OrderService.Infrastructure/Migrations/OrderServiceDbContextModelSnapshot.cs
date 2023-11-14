@@ -92,9 +92,6 @@ namespace Tgyka.Microservice.OrderService.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<string>("BuyerId")
                         .IsRequired()
                         .HasMaxLength(200)

@@ -13,7 +13,6 @@ namespace Tgyka.Microservice.OrderService.Domain.Entities
         public DateTime CreatedDate { get; set; }
         public List<OrderItem> OrderItems { get; set; }
         public OrderStatus Status { get; set; }
-        public int AddressId { get; set; }
         public virtual Address Address { get; set; }
     }
 

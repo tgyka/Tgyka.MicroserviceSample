@@ -23,6 +23,11 @@ namespace Tgyka.Microservice.OrderService.Infrastructure.Configurations
             .WithOne(e => e.Order)
             .HasForeignKey<Address>(e => e.OrderId)
             .IsRequired();
+
+            builder.HasMany(e => e.OrderItems)
+                .WithOne(e => e.Order)
+                .HasForeignKey(e => e.OrderId)
+                .IsRequired();
         }
     }
 }

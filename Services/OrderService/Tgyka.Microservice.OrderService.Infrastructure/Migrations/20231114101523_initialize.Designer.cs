@@ -12,7 +12,7 @@ using Tgyka.Microservice.OrderService.Infrastructure;
 namespace Tgyka.Microservice.OrderService.Infrastructure.Migrations
 {
     [DbContext(typeof(OrderServiceDbContext))]
-    [Migration("20231113141915_initialize")]
+    [Migration("20231114101523_initialize")]
     partial class initialize
     {
         /// <inheritdoc />
@@ -94,9 +94,6 @@ namespace Tgyka.Microservice.OrderService.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
 
                     b.Property<string>("BuyerId")
                         .IsRequired()

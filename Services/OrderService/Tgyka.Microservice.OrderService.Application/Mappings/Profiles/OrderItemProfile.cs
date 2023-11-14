@@ -9,6 +9,8 @@ namespace Tgyka.Microservice.OrderService.Application.Mappings.Profiles
         public OrderItemProfile()
         {
             CreateMap<OrderItemDto, OrderItem>().ReverseMap();
+            CreateMap<OrderItemCreateDto, OrderItem>().ReverseMap();
+
         }
     }
 }

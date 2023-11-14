@@ -16,10 +16,9 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Commands
     public class CreateOrderCommand: IRequest<ApiResponse<OrderDto>>
     {
         public string BuyerId => "system";
+        public List<OrderItemCreateDto> OrderItems { get; set; }
 
-        public List<OrderItemDto> OrderItems { get; set; }
-
-        public AddressDto Address { get; set; }
+        public AddressCreateDto Address { get; set; }
         public OrderStatus Status => OrderStatus.Created;
         public DateTime CreatedDate => DateTime.UtcNow;
 

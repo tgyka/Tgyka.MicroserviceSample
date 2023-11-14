@@ -1,8 +1,11 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Tgyka.Microservice.Base.M�ddlewares;
 using Tgyka.Microservice.OrderService.Api;
 using Tgyka.Microservice.OrderService.Application.Consumers;
+using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
 using Tgyka.Microservice.OrderService.Application.Services.Commands;
 using Tgyka.Microservice.OrderService.Infrastructure;
 using Tgyka.Microservice.Rabbitmq.Events;
@@ -17,18 +20,19 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAutoMapper(typeof(Program));
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddSwagger();
+builder.Services.AddAutoMapper(typeof(OrderDto));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly));
 builder.Services.AddThisDbContext();
 builder.Services.AddRepositories();
 
-builder.Services.AddMassTransit(x =>
+builder.Services.AddDbContext<OrderServiceDbContext>(opt =>
 {
-    x.AddConsumer<ProductStockNotReservedEventConsumer>();
-    x.UsingRabbitMq((context, cfg) =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"), configure =>
     {
-        RabbitmqSettings rabbitmqSettings = new();
-        builder.Configuration.GetSection("Rabbitmq").Bind(rabbitmqSettings);
+        configure.MigrationsAssembly("Tgyka.Microservice.OrderService.Infrastructure");
+    });
+});
 
         cfg.Host(rabbitmqSettings.Uri, "/", host =>
         {
@@ -55,6 +59,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

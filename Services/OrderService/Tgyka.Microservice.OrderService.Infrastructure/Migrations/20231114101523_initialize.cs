@@ -20,7 +20,6 @@ namespace Tgyka.Microservice.OrderService.Infrastructure.Migrations
                     BuyerId = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ModifiedBy = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),

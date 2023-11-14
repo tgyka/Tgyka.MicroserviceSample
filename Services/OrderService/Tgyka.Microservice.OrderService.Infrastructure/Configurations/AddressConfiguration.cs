@@ -25,11 +25,6 @@ namespace Tgyka.Microservice.OrderService.Infrastructure.Configurations
 
             builder.Property(x => x.CreatedBy).IsRequired().HasMaxLength(200);
             builder.Property(x => x.ModifiedBy).HasMaxLength(200);
-
-            builder.HasOne(e => e.Order)
-            .WithOne(e => e.Address)
-            .HasForeignKey<Order>(e => e.AddressId)
-            .IsRequired();
         }
     }
 }

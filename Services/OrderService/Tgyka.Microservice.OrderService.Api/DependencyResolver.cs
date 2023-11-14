@@ -40,7 +40,7 @@ namespace Tgyka.Microservice.OrderService.Api
             });
         }
 
-        public static void AddThisDbContext(this IServiceCollection services) => services.AddTransient<MssqlDbContext, OrderServiceDbContext>();
+        public static void AddThisDbContext(this IServiceCollection services) => services.AddScoped<MssqlDbContext, OrderServiceDbContext>();
 
         public static void AddRepositories(this IServiceCollection services)
         {

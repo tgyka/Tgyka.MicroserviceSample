@@ -42,7 +42,7 @@ namespace Tgyka.Microservice.ProductService
             });
         }
 
-        public static void AddThisDbContext(this IServiceCollection services) => services.AddTransient<MssqlDbContext, ProductServiceDbContext>();
+        public static void AddThisDbContext(this IServiceCollection services) => services.AddScoped<MssqlDbContext, ProductServiceDbContext>();
 
         public static void AddServices(this IServiceCollection services)
         {
