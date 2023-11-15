@@ -8,9 +8,9 @@ namespace Tgyka.Microservice.Rabbitmq.Events
 {
     public class ProductDeletedEvent
     {
-        public ProductDeletedEvent(int ıd)
+        public ProductDeletedEvent(int id)
         {
-            Id = ıd;
+            Id = id;
         }
 
         public int Id { get; set; }

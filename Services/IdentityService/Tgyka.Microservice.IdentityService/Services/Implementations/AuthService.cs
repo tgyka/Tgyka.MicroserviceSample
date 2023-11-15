@@ -30,19 +30,19 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
             _jwtSettings = jwtSettings.Value;
         }
 
-        public async Task<ApiResponse<AuthResponseDto>> Login(LoginModel model)
+        public async Task<ApiResponse<AuthModel>> Login(LoginModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
             if (user == null)
             {
-                return ApiResponse<AuthResponseDto>.Error(400,"User is not found");
+                return ApiResponse<AuthModel>.Error(400,"User is not found");
             }
             var result = await _signInManager.PasswordSignInAsync(user, model.Password, true, lockoutOnFailure: false);
 
-            return ApiResponse<AuthResponseDto>.Success(200,GenerateJwtToken(user));
+            return ApiResponse<AuthModel>.Success(200,GenerateJwtToken(user));
         }
 
-        public async Task<ApiResponse<AuthResponseDto>> Register(RegisterModel model)
+        public async Task<ApiResponse<AuthModel>> Register(RegisterModel model)
         {
             var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
 
@@ -50,25 +50,25 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
 
             if (result.Succeeded)
             {
-                return ApiResponse<AuthResponseDto>.Success(200, GenerateJwtToken(user));
+                return ApiResponse<AuthModel>.Success(200, GenerateJwtToken(user));
             }
             else
             {
                 var errors = result.Errors.Select(e => e.Description);
-                return ApiResponse<AuthResponseDto>.Error(400,errors.ToArray());
+                return ApiResponse<AuthModel>.Error(400,errors.ToArray());
             }
         }
 
-        private AuthResponseDto GenerateJwtToken(ApplicationUser user)
+        private AuthModel GenerateJwtToken(ApplicationUser user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var expireDate = DateTime.UtcNow.AddMinutes(30);
             var claims = new List<Claim>
             {
-                new(ClaimTypes.NameIdentifier, user.Id),
-                new(ClaimTypes.Email, user.Email),
-                new(ClaimTypes.Name, user.UserName),
+                new("UserId", user.Id),
+                new("Email", user.Email),
+                new("Username", user.UserName),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
@@ -79,7 +79,7 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
                     expires: expireDate, 
                     signingCredentials: credentials);
 
-                return new AuthResponseDto 
+                return new AuthModel 
                 { 
                     AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
                     ExpireDate = expireDate,

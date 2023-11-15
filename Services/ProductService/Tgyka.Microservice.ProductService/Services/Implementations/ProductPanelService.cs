@@ -49,7 +49,7 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
                 ApiResponse<ProductPanelDto>.Error(400,"Category is not found");
             }
 
-            await _publishEndpoint.Publish(new ProductCreatedEvent(data.Name,data.Description,data.Price,data.Stock,data.CategoryId,category.Name));
+            _publishEndpoint.Publish(new ProductCreatedEvent(data.Id,data.Name,data.Description,data.Price,data.Stock,data.CategoryId,category.Name));
 
             return ApiResponse<ProductPanelDto>.Success(200, data);
         }
@@ -65,7 +65,7 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
                 ApiResponse<ProductPanelDto>.Error(400, "Category is not found");
             }
 
-            await _publishEndpoint.Publish(new ProductUpdatedEvent(data.Id, data.Name, data.Description, data.Price, data.Stock, data.CategoryId,category.Name));
+            _publishEndpoint.Publish(new ProductUpdatedEvent(data.Id, data.Name, data.Description, data.Price, data.Stock, data.CategoryId,category.Name));
 
             return ApiResponse<ProductPanelDto>.Success(200, data);
         }
@@ -74,7 +74,7 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
         {
             var entity = _productRepository.Get(r => r.Id == productId);
             var data = await _productRepository.SetWithCommit<Product, ProductPanelDto>(entity, CommandState.SoftDelete);
-            await _publishEndpoint.Publish(new ProductDeletedEvent(productId));
+            _publishEndpoint.Publish(new ProductDeletedEvent(productId));
             return ApiResponse<ProductPanelDto>.Success(200, data);
         }
     }

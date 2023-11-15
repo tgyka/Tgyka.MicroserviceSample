@@ -27,7 +27,7 @@ namespace Tgyka.Microservice.BasketService.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upsert(BasketRequestDto request)
+        public async Task<IActionResult> Upsert(BasketUpsertDto request)
         {
             return ApiActionResult(await _basketService.Upsert(request));
         }

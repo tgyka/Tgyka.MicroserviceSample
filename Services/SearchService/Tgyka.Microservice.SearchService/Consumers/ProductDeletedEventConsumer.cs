@@ -9,12 +9,10 @@ namespace Tgyka.Microservice.SearchService.Consumers
     public class ProductDeletedEventConsumer : IConsumer<ProductDeletedEvent>
     {
         private readonly IProductService _productService;
-        private readonly IMapper _mapper;
 
-        public ProductDeletedEventConsumer(IProductService productService, IMapper mapper)
+        public ProductDeletedEventConsumer(IProductService productService)
         {
             _productService = productService;
-            _mapper = mapper;
         }
 
         public Task Consume(ConsumeContext<ProductDeletedEvent> context)

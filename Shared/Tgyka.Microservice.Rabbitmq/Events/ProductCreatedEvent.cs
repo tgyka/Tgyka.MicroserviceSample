@@ -8,8 +8,9 @@ namespace Tgyka.Microservice.Rabbitmq.Events
 {
     public class ProductCreatedEvent
     {
-        public ProductCreatedEvent(string name, string description, int price, int stock, int categoryId, string categoryName)
+        public ProductCreatedEvent(int id, string name, string description, int price, int stock, int categoryId, string categoryName)
         {
+            Id = id;
             Name = name;
             Description = description;
             Price = price;
@@ -18,6 +19,7 @@ namespace Tgyka.Microservice.Rabbitmq.Events
             CategoryName = categoryName;
         }
 
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int Price { get; set; }

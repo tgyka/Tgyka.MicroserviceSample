@@ -6,7 +6,6 @@ using Tgyka.Microservice.OrderService.Application.Consumers;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
 using Tgyka.Microservice.OrderService.Application.Services.Commands;
 using Tgyka.Microservice.OrderService.Infrastructure;
-using Tgyka.Microservice.Rabbitmq.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +29,7 @@ builder.Services.AddMassTransit(x =>
     {
         cfg.Host(builder.Configuration.GetValue<string>("RabbitMqUri"));
 
-        cfg.ReceiveEndpoint("product-stock-not-reserveds", e =>
+        cfg.ReceiveEndpoint("product-stock-not-reserved", e =>
         {
             e.ConfigureConsumer<ProductStockNotReservedEventConsumer>(context);
         });

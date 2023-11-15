@@ -6,7 +6,7 @@ namespace Tgyka.Microservice.IdentityService.Services.Abstractions
 {
     public interface IAuthService
     {
-        Task<ApiResponse<AuthResponseDto>> Login(LoginModel model);
-        Task<ApiResponse<AuthResponseDto>> Register(RegisterModel model);
+        Task<ApiResponse<AuthModel>> Login(LoginModel model);
+        Task<ApiResponse<AuthModel>> Register(RegisterModel model);
     }
 }

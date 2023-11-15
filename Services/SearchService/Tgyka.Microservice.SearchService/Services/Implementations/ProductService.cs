@@ -1,4 +1,5 @@
-﻿using Nest;
+﻿using Microsoft.Extensions.Options;
+using Nest;
 using Tgyka.Microservice.Base.Model.ApiResponse;
 using Tgyka.Microservice.SearchService.Model.Dtos;
 using Tgyka.Microservice.SearchService.Services.Abstractions;
@@ -9,19 +10,22 @@ namespace Tgyka.Microservice.SearchService.Services.Implementations
     public class ProductService: IProductService
     {
         private readonly ConnectionSettings _connectionSettings;
-        private readonly ElasticSettings _elasticSetttings;
+        private readonly ElasticSettings _elasticSettings;
         private readonly ElasticClient _client;
 
-        public ProductService(ElasticSettings elasticSetttings)
+        public ProductService(IOptions<ElasticSettings> elasticSetttings)
         {
-            _elasticSetttings = elasticSetttings;
-            _connectionSettings = new ConnectionSettings(new Uri(elasticSetttings.ConnectionUri))
-                        .DefaultIndex(elasticSetttings.DefaultIndex);
+            _elasticSettings = elasticSetttings.Value;
+
+            _connectionSettings = new ConnectionSettings(new Uri(_elasticSettings.ConnectionUri))
+                        .DefaultIndex(_elasticSettings.DefaultIndex)
+                        .BasicAuthentication(_elasticSettings.Username, _elasticSettings.Password);
+
             _client = new ElasticClient(_connectionSettings);
 
-            if (!_client.Indices.Exists(_elasticSetttings.DefaultIndex).Exists)
+            if (!_client.Indices.Exists(_elasticSettings.DefaultIndex).Exists)
             {
-                _client.Indices.Create(_elasticSetttings.DefaultIndex,
+                _client.Indices.Create(_elasticSettings.DefaultIndex,
                      index => index.Map<ProductDto>(
                           x => x
                          .AutoMap()
@@ -32,18 +36,18 @@ namespace Tgyka.Microservice.SearchService.Services.Implementations
         public async Task<ApiResponse<List<ProductDto>>> GetProducts(string searchString,int page,int size,bool priceIsDescending)
         {
             var data = (await _client.SearchAsync<ProductDto>(s => s
+                .Index(_elasticSettings.DefaultIndex)
                 .From((page - 1) * size)
                 .Size(size)
                 .Query(q => q
-                    .MultiMatch(m => m
-                        .Fields(f => f
-                            .Field(p => p.Name, boost: 3)
-                            .Field(p => p.Description, boost: 2)
-                            .Field(p => p.CategoryName, boost: 1)
-                        )
-                        .Query(searchString)
-                    )
-                )
+                .QueryString(qs => qs
+                .AnalyzeWildcard()
+                    .Query("*" + searchString.ToLower() + "*")
+                    .Fields(fs => fs
+                        .Field(p => p.Name, boost: 3)
+                        .Field(p => p.Description, boost: 2)
+                        .Field(p => p.CategoryName, boost: 1)
+                )))
                 .Sort(sort => sort
                     .Field(f => f.Field(p => p.Price).Order(priceIsDescending ? SortOrder.Descending : SortOrder.Ascending))
                 ))).Documents.ToList();
@@ -53,7 +57,7 @@ namespace Tgyka.Microservice.SearchService.Services.Implementations
 
         public async Task<ApiResponse<ProductDto>> CreateProduct(ProductDto request)
         {
-            var result = await _client.IndexAsync(request, i => i.Index(_elasticSetttings.DefaultIndex));
+            var result = await _client.IndexAsync(request, i => i.Index(_elasticSettings.DefaultIndex));
 
             if(!result.IsValid)
             {
@@ -66,7 +70,7 @@ namespace Tgyka.Microservice.SearchService.Services.Implementations
         public async Task<ApiResponse<ProductDto>> UpdateProduct(ProductDto request)
         {
             var result = await _client.UpdateAsync<ProductDto>(request.Id, u => u
-                  .Index(_elasticSetttings.DefaultIndex)
+                  .Index(_elasticSettings.DefaultIndex)
                   .Doc(request));
             return ApiResponse<ProductDto>.Success(200, request);
         }

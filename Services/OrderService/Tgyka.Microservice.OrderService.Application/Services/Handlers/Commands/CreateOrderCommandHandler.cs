@@ -46,7 +46,7 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Commands
             _orderRepository.Set(order, CommandState.Create);
             await _unitOfWork.CommitAsync();
 
-            await _publishEndpoint.Publish(new ProductStockUpdatedEvent(order.OrderItems.Select(r => r.Id).ToArray(), order.Id));
+            _publishEndpoint.Publish(new ProductStockUpdatedEvent(order.OrderItems.Select(r => r.ProductId).ToArray(), order.Id));
 
             return ApiResponse<OrderDto>.Success(201,_mapper.Map<OrderDto>(order));
         }

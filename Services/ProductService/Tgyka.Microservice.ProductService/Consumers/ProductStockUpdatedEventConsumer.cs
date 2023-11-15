@@ -34,12 +34,12 @@ namespace Tgyka.Microservice.ProductService.Consumers
             {
                 if (product.Stock <= 0)
                 {
-                    await _publishEndpoint.Publish(new ProductStockNotReservedEvent(product.Id, context.Message.OrderId));
+                    _publishEndpoint.Publish(new ProductStockNotReservedEvent(product.Id, context.Message.OrderId));
                     products.DataList = products.DataList.Where(r => r.Id != product.Id).ToList();
                     continue;
                 }
 
-                product.Stock = -1;
+                product.Stock -= 1;
             }
 
             _productRepository.Set(products.DataList,CommandState.Update);

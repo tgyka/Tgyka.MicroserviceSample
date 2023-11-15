@@ -8,9 +8,9 @@ namespace Tgyka.Microservice.Rabbitmq.Events
 {
     public class ProductUpdatedEvent
     {
-        public ProductUpdatedEvent(int ıd, string name, string description, int price, int stock, int categoryId, string categoryName)
+        public ProductUpdatedEvent(int id, string name, string description, int price, int stock, int categoryId, string categoryName)
         {
-            Id = ıd;
+            Id = id;
             Name = name;
             Description = description;
             Price = price;

@@ -26,13 +26,13 @@ namespace Tgyka.Microservice.ProductService.Controllers
         }
 
         [HttpPost("createCategory")]
-        public async Task<IActionResult> CreateCategory(CategoryPanelCreateRequestDto categoryRequest)
+        public async Task<IActionResult> CreateCategory(CategoryPanelCreateDto categoryRequest)
         {
             return ApiActionResult(await _categoryPanelService.CreateCategory(categoryRequest));
         }
 
         [HttpPut("updateCategory")]
-        public async Task<IActionResult> UpdateCategory(CategoryPanelUpdateRequestDto categoryRequest)
+        public async Task<IActionResult> UpdateCategory(CategoryPanelUpdateDto categoryRequest)
         {
             return ApiActionResult(await _categoryPanelService.UpdateCategory(categoryRequest));
         }

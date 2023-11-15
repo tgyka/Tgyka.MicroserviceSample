@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MssqlRestApi.Base.Controller;
 using Tgyka.Microservice.IdentityService.Data.Entities;
@@ -9,6 +10,7 @@ namespace Tgyka.Microservice.IdentityService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : TgykaMicroserviceControllerBase
     {
         private readonly IUserService _userService;

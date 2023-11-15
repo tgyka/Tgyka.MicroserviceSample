@@ -33,13 +33,13 @@ namespace Tgyka.Microservice.ProductService.Controllers
         }
 
         [HttpPost("createProduct")]
-        public async Task<IActionResult> CreateProduct(ProductPanelCreateRequestDto productRequest)
+        public async Task<IActionResult> CreateProduct(ProductPanelCreateDto productRequest)
         {
             return ApiActionResult(await _productPanelService.CreateProduct(productRequest));
         }
 
         [HttpPut("updateProduct")]
-        public async Task<IActionResult> UpdateProduct(ProductPanelUpdateRequestDto productRequest)
+        public async Task<IActionResult> UpdateProduct(ProductPanelUpdateDto productRequest)
         {
             return ApiActionResult(await _productPanelService.UpdateProduct(productRequest));
         }
