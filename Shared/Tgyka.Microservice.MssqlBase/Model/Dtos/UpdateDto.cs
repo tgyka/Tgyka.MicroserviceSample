@@ -4,6 +4,5 @@
     {
         public int Id { get; set; }
         public DateTime? ModifiedDate => DateTime.UtcNow;
-        public int? ModifiedBy {  get; set; }
     }
 }

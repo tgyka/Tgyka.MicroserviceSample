@@ -1,13 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
-using System;
-using System.Reflection;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Tgyka.Microservice.IdentityService.Data.Entities;
 using Tgyka.Microservice.IdentityService.Models;
-using System.Linq;
 using Tgyka.Microservice.IdentityService.Services.Abstractions;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -63,7 +58,7 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
         {
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtSettings.Secret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-            var expireDate = DateTime.UtcNow.AddMinutes(30);
+            var expireDate = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpireMinute);
             var claims = new List<Claim>
             {
                 new("UserId", user.Id),
@@ -72,20 +67,20 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
-                var token = new JwtSecurityToken(
-                    issuer: _jwtSettings.Issuer,
-                    audience: _jwtSettings.Audience,
-                    claims: claims,
-                    expires: expireDate, 
-                    signingCredentials: credentials);
+            var token = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
+                claims: claims,
+                expires: expireDate, 
+                signingCredentials: credentials);
 
-                return new AuthModel 
-                { 
-                    AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                    ExpireDate = expireDate,
-                    Id = user.Id,
-                    Username = user.UserName,
-                };
+            return new AuthModel 
+            { 
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
+                ExpireDate = expireDate,
+                Id = user.Id,
+                Username = user.UserName,
+            };
         }
     }
 }

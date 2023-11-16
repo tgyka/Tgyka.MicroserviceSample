@@ -5,6 +5,7 @@ using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
 using System.Security.Principal;
 using AutoMapper;
 using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
+using Tgyka.Microservice.Base.Model.Token;
 
 namespace Tgyka.Microservice.MssqlBase.Data.Repository
 {
@@ -14,13 +15,15 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
         protected readonly DbSet<TEntity> _dbSet;
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly IMapper _mapper;
+        protected readonly TokenUser _tokenUser;
 
-        public BaseRepository(MssqlDbContext dbContext, IUnitOfWork unitofWork, IMapper mapper)
+        public BaseRepository(MssqlDbContext dbContext, IUnitOfWork unitofWork, IMapper mapper, TokenUser tokenUser)
         {
             _dbContext = dbContext;
             _dbSet = _dbContext.Set<TEntity>();
             _unitOfWork = unitofWork;
             _mapper = mapper;
+            _tokenUser = tokenUser;
         }
 
         public TEntity Get(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null,
@@ -43,9 +46,11 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
             return _dbSet.AsNoTracking();
         }
 
-        public TEntity Set(TEntity entity, CommandState state)
+        public TEntity Set(TEntity entity, CommandState state,string? userId = null)
         {
-            if(state == CommandState.SoftDelete)
+            var tokenUserId = userId ?? _tokenUser.Id;
+
+            if (state == CommandState.SoftDelete)
             {
                 entity.IsDeleted = true;
             }
@@ -55,17 +60,23 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
                 var olderEntity = Get(r => r.Id == entity.Id);
                 entity.CreatedBy = olderEntity.CreatedBy;
                 entity.CreatedDate = olderEntity.CreatedDate;
+                entity.ModifiedBy = tokenUserId;
+            }
+
+            if(state == CommandState.Create)
+            {
+                entity.CreatedBy = tokenUserId;
             }
 
             _dbSet.Entry(entity).State = GetEntityStateFromCommandState(state);
             return entity;
         }
 
-        public List<TEntity> Set(IEnumerable<TEntity> entitites, CommandState state)
+        public List<TEntity> Set(IEnumerable<TEntity> entitites, CommandState state, string? userId = null)
         {
             foreach (var entry in entitites)
             {
-                Set(entry, state);
+                Set(entry, state, userId);
             }
             return entitites.ToList();
         }
@@ -83,18 +94,18 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
             return new PaginationList<TMapped>(mappedData,response.Count,response.Page,response.Size);
         }
 
-        public async Task<TMapped> SetWithCommit<TRequest,TMapped>(TRequest request, CommandState state)
+        public async Task<TMapped> SetWithCommit<TRequest,TMapped>(TRequest request, CommandState state,string? userId = null)
         {
             var entity = _mapper.Map<TEntity>(request);
-            var entityResponse = Set(entity, state);
+            var entityResponse = Set(entity, state, userId);
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<TMapped>(entityResponse);
         }
 
-        public async Task<List<TMapped>> SetWithCommit<TRequest, TMapped>(List<TRequest> requests, CommandState state)
+        public async Task<List<TMapped>> SetWithCommit<TRequest, TMapped>(List<TRequest> requests, CommandState state, string? userId = null)
         {
             var entities = _mapper.Map<IEnumerable<TEntity>>(requests);
-            var entitiesResponse = Set(entities, state);
+            var entitiesResponse = Set(entities, state, userId);
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<List<TMapped>>(entitiesResponse);
         }

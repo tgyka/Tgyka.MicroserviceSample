@@ -1,5 +1,6 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Tgyka.Microservice.Base;
 using Tgyka.Microservice.Base.Middlewares;
 using Tgyka.Microservice.OrderService.Api;
 using Tgyka.Microservice.OrderService.Application.Consumers;
@@ -20,7 +21,7 @@ builder.Services.AddAutoMapper(typeof(OrderDto));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly));
 builder.Services.AddThisDbContext();
 builder.Services.AddRepositories();
-
+builder.Services.AddAuthenticationAndBindTokenUser(builder.Configuration);
 
 builder.Services.AddMassTransit(x =>
 {
@@ -54,7 +55,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

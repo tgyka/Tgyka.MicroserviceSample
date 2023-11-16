@@ -34,7 +34,7 @@ namespace Tgyka.Microservice.ProductService.Consumers
             {
                 if (product.Stock <= 0)
                 {
-                    _publishEndpoint.Publish(new ProductStockNotReservedEvent(product.Id, context.Message.OrderId));
+                    _publishEndpoint.Publish(new ProductStockNotReservedEvent(product.Id, context.Message.OrderId,context.Message.UserId));
                     products.DataList = products.DataList.Where(r => r.Id != product.Id).ToList();
                     continue;
                 }
@@ -42,7 +42,7 @@ namespace Tgyka.Microservice.ProductService.Consumers
                 product.Stock -= 1;
             }
 
-            _productRepository.Set(products.DataList,CommandState.Update);
+            _productRepository.Set(products.DataList,CommandState.Update, context.Message.UserId);
             await _unitOfWork.CommitAsync();
         }
     }

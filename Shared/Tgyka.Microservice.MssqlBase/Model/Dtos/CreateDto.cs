@@ -3,6 +3,5 @@
     public class CreateDto
     {
         public DateTime CreatedDate => DateTime.UtcNow;
-        public int CreatedBy { get; set; }
     }
 }

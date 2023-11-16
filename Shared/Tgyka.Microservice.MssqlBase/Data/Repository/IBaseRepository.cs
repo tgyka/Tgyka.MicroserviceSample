@@ -12,9 +12,9 @@ namespace Tgyka.Microservice.MssqlBase.Data.Repository
         TMapped GetWithMapper<TMapped>(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null, Func<TEntity, object> orderBySelector = null, bool isDescending = false);
         PaginationList<TEntity> List(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null, Func<TEntity, object> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0);
         PaginationList<TMapped> ListWithMapper<TMapped>(Func<TEntity, bool> predicate = null, List<Expression<Func<TEntity, object>>> includes = null, Func<TEntity, object> orderBySelector = null, bool isDescending = false, int page = 0, int size = 0);
-        TEntity Set(TEntity entity, CommandState state);
-        List<TEntity> Set(IEnumerable<TEntity> entitites, CommandState state);
-        Task<TMapped> SetWithCommit<TRequest, TMapped>(TRequest request, CommandState state);
-        Task<List<TMapped>> SetWithCommit<TRequest, TMapped>(List<TRequest> requests, CommandState state);
+        TEntity Set(TEntity entity, CommandState state, string? userId = null);
+        List<TEntity> Set(IEnumerable<TEntity> entitites, CommandState state, string? userId = null);
+        Task<TMapped> SetWithCommit<TRequest, TMapped>(TRequest request, CommandState state, string? userId = null);
+        Task<List<TMapped>> SetWithCommit<TRequest, TMapped>(List<TRequest> requests, CommandState state, string? userId = null);
     }
 }

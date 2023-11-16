@@ -12,7 +12,7 @@ namespace Tgyka.Microservice.OrderService.Application.Models.Dtos.Order
 {
     public class OrderDto : GetDto
     {
-        public string BuyerId => "system";
+        public string BuyerId {  get; set; }
         public DateTime CreatedDate { get; set; }
         public List<OrderItemDto> OrderItems { get; set; }
         public OrderStatus Status { get; set; }

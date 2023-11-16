@@ -1,5 +1,6 @@
 using MassTransit;
 using Microsoft.Extensions.Configuration;
+using Tgyka.Microservice.Base.Middlewares;
 using Tgyka.Microservice.SearchService.Consumers;
 using Tgyka.Microservice.SearchService.Services.Abstractions;
 using Tgyka.Microservice.SearchService.Services.Implementations;
@@ -54,6 +55,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

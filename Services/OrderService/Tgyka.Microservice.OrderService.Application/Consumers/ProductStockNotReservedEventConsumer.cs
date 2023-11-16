@@ -28,14 +28,13 @@ namespace Tgyka.Microservice.OrderService.Application.Consumers
         {
             var order = _orderRepository.Get(r => r.Id == context.Message.OrderId);
 
-
             if(order == null)
             {
-
+                return;
             }
 
             order.Status = OrderStatus.StockNotReserved;
-            _orderRepository.Set(order, CommandState.Update);
+            _orderRepository.Set(order, CommandState.Update,context.Message.UserId);
             await _unitOfWork.CommitAsync();
         }
     }
