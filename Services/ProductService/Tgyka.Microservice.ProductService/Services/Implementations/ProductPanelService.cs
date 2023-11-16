@@ -51,7 +51,7 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
 
             _publishEndpoint.Publish(new ProductCreatedEvent(data.Id,data.Name,data.Description,data.Price,data.Stock,data.CategoryId,category.Name));
 
-            return ApiResponse<ProductPanelDto>.Success(200, data);
+            return ApiResponse<ProductPanelDto>.Success(201, data);
         }
 
         public async Task<ApiResponse<ProductPanelDto>> UpdateProduct(ProductPanelUpdateDto productRequest)

@@ -30,7 +30,7 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
         public async Task<ApiResponse<CategoryPanelDto>> CreateCategory(CategoryPanelCreateDto categoryRequest)
         {
             var data = await _categoryRepository.SetWithCommit<CategoryPanelCreateDto, CategoryPanelDto>(categoryRequest, CommandState.Create);
-            return ApiResponse<CategoryPanelDto>.Success(200, data);
+            return ApiResponse<CategoryPanelDto>.Success(201, data);
 
         }
 
