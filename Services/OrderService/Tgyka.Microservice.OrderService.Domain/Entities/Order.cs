@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tgyka.Microservice.MssqlBase.Data.Entity;
+using Tgyka.Microservice.OrderService.Domain.Enums;
 
 namespace Tgyka.Microservice.OrderService.Domain.Entities
 {
@@ -14,15 +15,5 @@ namespace Tgyka.Microservice.OrderService.Domain.Entities
         public List<OrderItem> OrderItems { get; set; }
         public OrderStatus Status { get; set; }
         public virtual Address Address { get; set; }
-    }
-
-    public enum OrderStatus
-    {
-        Created,
-        StockNotReserved,
-        Preparing,
-        Shipping,
-        Delivered,
-        Canceled
     }
 }

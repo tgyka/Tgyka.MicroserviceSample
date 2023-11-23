@@ -23,12 +23,12 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
             return ApiResponse<ApplicationUser>.Success(200, user);
         }
 
-        public async Task<ApiResponse<PaginationList<ApplicationUser>>> ListUsers(int page,int size)
+        public async Task<ApiResponse<PaginationModel<ApplicationUser>>> GetAllUsers(int page,int size)
         {
             var users = await _userManager.Users.Skip((page - 1) * size).Take(size).ToListAsync();
             var count = _userManager.Users.Count();
 
-            return ApiResponse<PaginationList<ApplicationUser>>.Success(200, new PaginationList<ApplicationUser>(users, count,page,size));
+            return ApiResponse<PaginationModel<ApplicationUser>>.Success(200, new PaginationModel<ApplicationUser>(users, count,page,size));
         }
 
         public async Task<ApiResponse<ApplicationUser>> UpdateUser(ApplicationUser user)

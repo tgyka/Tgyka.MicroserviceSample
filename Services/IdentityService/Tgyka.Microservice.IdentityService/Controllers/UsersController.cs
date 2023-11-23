@@ -29,7 +29,7 @@ namespace Tgyka.Microservice.IdentityService.Controllers
         [HttpGet("list")]
         public async Task<IActionResult> ListUsers(int page,int size)
         {
-            return ApiActionResult(await _userService.ListUsers(page,size));
+            return ApiActionResult(await _userService.GetAllUsers(page,size));
         }
 
         [HttpPut]

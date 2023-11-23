@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MssqlRestApi.Base.Controller;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Requests;
+using Tgyka.Microservice.ProductService.Model.Dtos.Category;
 using Tgyka.Microservice.ProductService.Services.Abstractions;
 
 namespace Tgyka.Microservice.ProductService.Controllers
@@ -18,10 +18,10 @@ namespace Tgyka.Microservice.ProductService.Controllers
             _categoryPanelService = categoryPanelService;
         }
 
-        [HttpGet("listCategorysGrid")]
-        public IActionResult ListCategorysGrid(int page, int size)
+        [HttpGet("getCategorysGrid")]
+        public IActionResult GetCategorysGrid(int page, int size)
         {
-            return ApiActionResult(_categoryPanelService.ListCategorysGrid(page,size));
+            return ApiActionResult(_categoryPanelService.GetCategorysGrid(page,size));
 
         }
 

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Tgyka.Microservice.MssqlBase.Model.RepositoryDtos
 {
-    public class PaginationList<T>
+    public class PaginationModel<T>
     {
-        public PaginationList(IEnumerable<T> dataList, int count, int page, int size)
+        public PaginationModel(IEnumerable<T> dataList, int count, int page, int size)
         {
             DataList = dataList;
             Count = count;

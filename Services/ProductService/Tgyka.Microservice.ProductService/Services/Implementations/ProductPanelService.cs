@@ -1,13 +1,13 @@
 ﻿using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Tgyka.Microservice.Base.Model.ApiResponse;
+using Tgyka.Microservice.MssqlBase.Data.Enum;
 using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
 using Tgyka.Microservice.ProductService.Data.Entities;
 using Tgyka.Microservice.ProductService.Data.Repositories.Abstractions;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses;
-using Tgyka.Microservice.ProductService.Model.Dtos.Product.Requests;
-using Tgyka.Microservice.ProductService.Model.Dtos.Product.Responses;
+using Tgyka.Microservice.ProductService.Model.Dtos.Category;
+using Tgyka.Microservice.ProductService.Model.Dtos.Product;
 using Tgyka.Microservice.ProductService.Services.Abstractions;
 using Tgyka.Microservice.Rabbitmq.Events;
 
@@ -26,23 +26,23 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
             _publishEndpoint = publishEndpoint;
         }
 
-        public ApiResponse<PaginationList<ProductGridPanelDto>> ListProductsGrid(int page, int size)
+        public ApiResponse<PaginationModel<ProductGridPanelDto>> GetProductsGrid(int page, int size)
         {
-            var data = _productRepository.ListWithMapper<ProductGridPanelDto>(page: page, size: size);
-            return ApiResponse<PaginationList<ProductGridPanelDto>>.Success(200, data);
+            var data = _productRepository.GetAllMapped<ProductGridPanelDto>(page: page, size: size);
+            return ApiResponse<PaginationModel<ProductGridPanelDto>>.Success(200, data);
         }
 
-        public async Task<ApiResponse<PaginationList<CategorySelectBoxDto>>> ListCategoriesSelectBox()
+        public async Task<ApiResponse<PaginationModel<CategorySelectBoxDto>>> GetCategoriesSelectBox()
         {
-            var data = _categoryRepository.ListWithMapper<CategorySelectBoxDto>();
-            return ApiResponse<PaginationList<CategorySelectBoxDto>>.Success(200, data);
+            var data = _categoryRepository.GetAllMapped<CategorySelectBoxDto>();
+            return ApiResponse<PaginationModel<CategorySelectBoxDto>>.Success(200, data);
         }
 
         public async Task<ApiResponse<ProductPanelDto>> CreateProduct(ProductPanelCreateDto productRequest)
         {
-            var data = await _productRepository.SetWithCommit<ProductPanelCreateDto, ProductPanelDto>(productRequest, CommandState.Create);
+            var data = await _productRepository.SetAndCommit<ProductPanelCreateDto, ProductPanelDto>(productRequest, EntityCommandType.Create);
 
-            var category = _categoryRepository.Get(r => r.Id == productRequest.CategoryId);
+            var category = _categoryRepository.GetOne(r => r.Id == productRequest.CategoryId);
 
             if(category == null)
             {
@@ -56,9 +56,9 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
 
         public async Task<ApiResponse<ProductPanelDto>> UpdateProduct(ProductPanelUpdateDto productRequest)
         {
-            var data = await _productRepository.SetWithCommit<ProductPanelUpdateDto, ProductPanelDto>(productRequest, CommandState.Update);
+            var data = await _productRepository.SetAndCommit<ProductPanelUpdateDto, ProductPanelDto>(productRequest, EntityCommandType.Update);
 
-            var category = _categoryRepository.Get(r => r.Id == productRequest.CategoryId);
+            var category = _categoryRepository.GetOne(r => r.Id == productRequest.CategoryId);
 
             if (category == null)
             {
@@ -72,8 +72,8 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
 
         public async Task<ApiResponse<ProductPanelDto>> DeleteProduct(int productId)
         {
-            var entity = _productRepository.Get(r => r.Id == productId);
-            var data = await _productRepository.SetWithCommit<Product, ProductPanelDto>(entity, CommandState.SoftDelete);
+            var entity = _productRepository.GetOne(r => r.Id == productId);
+            var data = await _productRepository.SetAndCommit<Product, ProductPanelDto>(entity, EntityCommandType.SoftDelete);
             _publishEndpoint.Publish(new ProductDeletedEvent(productId));
             return ApiResponse<ProductPanelDto>.Success(200, data);
         }

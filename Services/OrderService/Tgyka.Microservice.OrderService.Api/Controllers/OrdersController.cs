@@ -25,7 +25,7 @@ namespace Tgyka.Microservice.OrderService.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> ListOrdersByBuyerId(int page , int size)
         {
-            return ApiActionResult(await _mediator.Send(new ListOrdersByBuyerIdQuery { BuyerId = _tokenUser.Id, Page = page, Size = size }));
+            return ApiActionResult(await _mediator.Send(new GetOrdersByBuyerIdQuery { BuyerId = _tokenUser.Id, Page = page, Size = size }));
         }
 
         [HttpPost]

@@ -1,13 +1,11 @@
 ﻿using Tgyka.Microservice.Base.Model.ApiResponse;
+using Tgyka.Microservice.MssqlBase.Data.Enum;
 using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
 using Tgyka.Microservice.ProductService.Data.Entities;
 using Tgyka.Microservice.ProductService.Data.Repositories.Abstractions;
 using Tgyka.Microservice.ProductService.Data.Repositories.Implementations;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Requests;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses;
-using Tgyka.Microservice.ProductService.Model.Dtos.Product.Requests;
-using Tgyka.Microservice.ProductService.Model.Dtos.Product.Responses;
+using Tgyka.Microservice.ProductService.Model.Dtos.Category;
 using Tgyka.Microservice.ProductService.Services.Abstractions;
 
 namespace Tgyka.Microservice.ProductService.Services.Implementations
@@ -21,29 +19,29 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
             _categoryRepository = categoryRepository;
         }
 
-        public ApiResponse<PaginationList<CategoryGridPanelDto>> ListCategorysGrid(int page, int size)
+        public ApiResponse<PaginationModel<CategoryGridPanelDto>> GetCategorysGrid(int page, int size)
         {
-            var data = _categoryRepository.ListWithMapper<CategoryGridPanelDto>(page: page, size: size);
-            return ApiResponse<PaginationList<CategoryGridPanelDto>>.Success(200, data);
+            var data = _categoryRepository.GetAllMapped<CategoryGridPanelDto>(page: page, size: size);
+            return ApiResponse<PaginationModel<CategoryGridPanelDto>>.Success(200, data);
         }
 
         public async Task<ApiResponse<CategoryPanelDto>> CreateCategory(CategoryPanelCreateDto categoryRequest)
         {
-            var data = await _categoryRepository.SetWithCommit<CategoryPanelCreateDto, CategoryPanelDto>(categoryRequest, CommandState.Create);
+            var data = await _categoryRepository.SetAndCommit<CategoryPanelCreateDto, CategoryPanelDto>(categoryRequest, EntityCommandType.Create);
             return ApiResponse<CategoryPanelDto>.Success(201, data);
 
         }
 
         public async Task<ApiResponse<CategoryPanelDto>> UpdateCategory(CategoryPanelUpdateDto categoryRequest)
         {
-            var data = await _categoryRepository.SetWithCommit<CategoryPanelUpdateDto, CategoryPanelDto>(categoryRequest, CommandState.Update);
+            var data = await _categoryRepository.SetAndCommit<CategoryPanelUpdateDto, CategoryPanelDto>(categoryRequest, EntityCommandType.Update);
             return ApiResponse<CategoryPanelDto>.Success(200, data);
         }
 
         public async Task<ApiResponse<CategoryPanelDto>> DeleteCategory(int categoryId)
         {
-            var entity = _categoryRepository.Get(r => r.Id == categoryId);
-            var data = await _categoryRepository.SetWithCommit<Category, CategoryPanelDto>(entity, CommandState.SoftDelete);
+            var entity = _categoryRepository.GetOne(r => r.Id == categoryId);
+            var data = await _categoryRepository.SetAndCommit<Category, CategoryPanelDto>(entity, EntityCommandType.SoftDelete);
             return ApiResponse<CategoryPanelDto>.Success(200, data);
         }
     }

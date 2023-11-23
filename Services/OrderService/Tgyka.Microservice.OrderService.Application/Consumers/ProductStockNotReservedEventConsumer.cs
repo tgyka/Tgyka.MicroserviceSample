@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tgyka.Microservice.MssqlBase.Data.Enum;
 using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
 using Tgyka.Microservice.OrderService.Domain.Entities;
+using Tgyka.Microservice.OrderService.Domain.Enums;
 using Tgyka.Microservice.OrderService.Domain.Repositories;
 using Tgyka.Microservice.Rabbitmq.Events;
 
@@ -26,7 +28,7 @@ namespace Tgyka.Microservice.OrderService.Application.Consumers
 
         public async Task Consume(ConsumeContext<ProductStockNotReservedEvent> context)
         {
-            var order = _orderRepository.Get(r => r.Id == context.Message.OrderId);
+            var order = _orderRepository.GetOne(r => r.Id == context.Message.OrderId);
 
             if(order == null)
             {
@@ -34,7 +36,7 @@ namespace Tgyka.Microservice.OrderService.Application.Consumers
             }
 
             order.Status = OrderStatus.StockNotReserved;
-            _orderRepository.Set(order, CommandState.Update,context.Message.UserId);
+            _orderRepository.SetEntityState(order, EntityCommandType.Update,context.Message.UserId);
             await _unitOfWork.CommitAsync();
         }
     }

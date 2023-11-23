@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{8B20FA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgyka.Microservice.MssqlBase", "Shared\Tgyka.Microservice.MssqlBase\Tgyka.Microservice.MssqlBase.csproj", "{AFBC5C8F-4F87-4B3F-92FE-20448F7FF423}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgyka.Microservice.Base", "Shared\Tgyka.Microservice.Base\Tgyka.Microservice.Base\Tgyka.Microservice.Base.csproj", "{752E3D99-BFFE-4F8B-9ADD-1B09C589F58E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgyka.Microservice.ServiceBase", "Shared\Tgyka.Microservice.ServiceBase\Tgyka.Microservice.ServiceBase\Tgyka.Microservice.ServiceBase.csproj", "{752E3D99-BFFE-4F8B-9ADD-1B09C589F58E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IdentityService", "IdentityService", "{118EF746-24B2-44F1-BEFD-CC56069FA8BB}"
 EndProject

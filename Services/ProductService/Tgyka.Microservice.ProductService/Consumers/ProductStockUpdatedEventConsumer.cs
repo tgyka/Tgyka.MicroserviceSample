@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Tgyka.Microservice.MssqlBase.Data.Enum;
 using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
 using Tgyka.Microservice.ProductService.Data.Entities;
@@ -23,26 +24,26 @@ namespace Tgyka.Microservice.ProductService.Consumers
         public async Task Consume(ConsumeContext<ProductStockUpdatedEvent> context)
         {
             var productIds = context.Message.ProductIds;
-            var products = _productRepository.List(r => productIds.Contains(r.Id));
+            var products = _productRepository.GetAll(r => productIds.Contains(r.Id));
 
             if(products == null || products.Count == 0)
             {
                 return;
             }
 
-            foreach(var product in products.DataList)
+            foreach(var product in products)
             {
                 if (product.Stock <= 0)
                 {
                     _publishEndpoint.Publish(new ProductStockNotReservedEvent(product.Id, context.Message.OrderId,context.Message.UserId));
-                    products.DataList = products.DataList.Where(r => r.Id != product.Id).ToList();
+                    products = products.Where(r => r.Id != product.Id).ToList();
                     continue;
                 }
 
                 product.Stock -= 1;
             }
 
-            _productRepository.Set(products.DataList,CommandState.Update, context.Message.UserId);
+            _productRepository.SetEntityState(products,EntityCommandType.Update, context.Message.UserId);
             await _unitOfWork.CommitAsync();
         }
     }

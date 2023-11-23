@@ -8,7 +8,7 @@ namespace Tgyka.Microservice.IdentityService.Services.Abstractions
     {
         Task<ApiResponse<string>> DeleteUser(ApplicationUser user);
         Task<ApiResponse<ApplicationUser>> GetUserByUsername(string username);
-        Task<ApiResponse<PaginationList<ApplicationUser>>> ListUsers(int page, int size);
+        Task<ApiResponse<PaginationModel<ApplicationUser>>> GetAllUsers(int page, int size);
         Task<ApiResponse<ApplicationUser>> UpdateUser(ApplicationUser user);
     }
 }

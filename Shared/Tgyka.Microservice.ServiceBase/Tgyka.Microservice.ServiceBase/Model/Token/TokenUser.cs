@@ -11,7 +11,7 @@ namespace Tgyka.Microservice.Base.Model.Token
         public string Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
-        public string Jwt { get; set; }
+        public string AccessToken { get; set; }
 
 
     }

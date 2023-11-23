@@ -47,10 +47,7 @@ namespace Tgyka.Microservice.SearchService.Services.Implementations
                         .Field(p => p.Name, boost: 3)
                         .Field(p => p.Description, boost: 2)
                         .Field(p => p.CategoryName, boost: 1)
-                )))
-                .Sort(sort => sort
-                    .Field(f => f.Field(p => p.Price).Order(priceIsDescending ? SortOrder.Descending : SortOrder.Ascending))
-                ))).Documents.ToList();
+                ))))).Documents.ToList();
 
             return ApiResponse<List<ProductDto>>.Success(200, data);
         }

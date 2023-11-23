@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Tgyka.Microservice.ProductService.Data.Entities;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Requests;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses;
-using Tgyka.Microservice.ProductService.Model.Dtos.Product.Requests;
+using Tgyka.Microservice.ProductService.Model.Dtos.Category;
 
 namespace Tgyka.Microservice.ProductService.Mappings.Profiles
 {

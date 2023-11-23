@@ -6,7 +6,6 @@ using Tgyka.Microservice.BasketService.Helpers;
 using Tgyka.Microservice.BasketService.Models.Dtos;
 using Tgyka.Microservice.BasketService.Services.Abstractions;
 using Tgyka.Microservice.BasketService.Settings;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Tgyka.Microservice.BasketService.Services.Implementations
 {
@@ -40,11 +39,11 @@ namespace Tgyka.Microservice.BasketService.Services.Implementations
             return ApiResponse<BasketDto>.Success(200, JsonSerializer.Deserialize<BasketDto>(result.ToString()));
         }
 
-        public async Task<ApiResponse<bool>> Delete(string userId)
+        public async Task<ApiResponse<string>> Delete(string userId)
         {
             var status = await _database.KeyDeleteAsync(userId);
 
-            return status ? ApiResponse<bool>.Success(204,status) : ApiResponse<bool>.Error(404, "Basket not found");
+            return status ? ApiResponse<string>.Success(204,"Basket successfully deleted") : ApiResponse<string>.Error(404, "Basket not found");
         }
     }
 }

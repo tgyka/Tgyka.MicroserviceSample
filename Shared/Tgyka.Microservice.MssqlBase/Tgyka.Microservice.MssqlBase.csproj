@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Tgyka.Microservice.Base\Tgyka.Microservice.Base\Tgyka.Microservice.Base.csproj" />
+    <ProjectReference Include="..\Tgyka.Microservice.ServiceBase\Tgyka.Microservice.ServiceBase\Tgyka.Microservice.ServiceBase.csproj" />
   </ItemGroup>
   
 </Project>

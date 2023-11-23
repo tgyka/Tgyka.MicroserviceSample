@@ -1,8 +1,8 @@
 ﻿using Tgyka.Microservice.MssqlBase.Model.Dtos;
 
-namespace Tgyka.Microservice.ProductService.Model.Dtos.Product.Requests
+namespace Tgyka.Microservice.ProductService.Model.Dtos.Product
 {
-    public class ProductPanelCreateDto: CreateDto
+    public class ProductPanelUpdateDto : UpdateDto
     {
         public string Name { get; set; }
         public string Description { get; set; }

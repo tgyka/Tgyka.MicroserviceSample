@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Tgyka.Microservice.Base.Model.ApiResponse;
 using Tgyka.Microservice.Base.Model.Token;
+using Tgyka.Microservice.MssqlBase.Data.Enum;
 using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
@@ -45,9 +46,9 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Commands
             var order = _mapper.Map<Order>(request);
             order.BuyerId = _tokenUser.Id;
 
-            _orderItemRepository.Set(order.OrderItems, CommandState.Create);
-            _addressRepository.Set(order.Address, CommandState.Create);
-            _orderRepository.Set(order, CommandState.Create);
+            _orderItemRepository.SetEntityState(order.OrderItems, EntityCommandType.Create);
+            _addressRepository.SetEntityState(order.Address, EntityCommandType.Create);
+            _orderRepository.SetEntityState(order, EntityCommandType.Create);
             await _unitOfWork.CommitAsync();
 
             _publishEndpoint.Publish(new ProductStockUpdatedEvent(order.OrderItems.Select(r => r.ProductId).ToArray(), order.Id,order.BuyerId));

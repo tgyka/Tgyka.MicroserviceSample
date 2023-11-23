@@ -1,7 +1,6 @@
 ﻿using Tgyka.Microservice.Base.Model.ApiResponse;
 using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Requests;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses;
+using Tgyka.Microservice.ProductService.Model.Dtos.Category;
 
 namespace Tgyka.Microservice.ProductService.Services.Abstractions
 {
@@ -9,7 +8,7 @@ namespace Tgyka.Microservice.ProductService.Services.Abstractions
     {
         Task<ApiResponse<CategoryPanelDto>> CreateCategory(CategoryPanelCreateDto categoryRequest);
         Task<ApiResponse<CategoryPanelDto>> DeleteCategory(int categoryId);
-        ApiResponse<PaginationList<CategoryGridPanelDto>> ListCategorysGrid(int page, int size);
+        ApiResponse<PaginationModel<CategoryGridPanelDto>> GetCategorysGrid(int page, int size);
         Task<ApiResponse<CategoryPanelDto>> UpdateCategory(CategoryPanelUpdateDto categoryRequest);
     }
 }

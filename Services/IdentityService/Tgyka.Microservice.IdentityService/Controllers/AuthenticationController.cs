@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MssqlRestApi.Base.Controller;
-using System.Threading.Tasks;
 using Tgyka.Microservice.IdentityService.Models;
 using Tgyka.Microservice.IdentityService.Services.Abstractions;
 

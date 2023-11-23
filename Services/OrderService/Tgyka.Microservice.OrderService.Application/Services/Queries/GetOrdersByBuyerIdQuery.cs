@@ -10,7 +10,7 @@ using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
 
 namespace Tgyka.Microservice.OrderService.Application.Services.Queries
 {
-    public class ListOrdersByBuyerIdQuery: IRequest<ApiResponse<PaginationList<OrderDto>>>
+    public class GetOrdersByBuyerIdQuery: IRequest<ApiResponse<PaginationModel<OrderDto>>>
     {
         public string BuyerId { get; set; }
         public int Page { get; set; }

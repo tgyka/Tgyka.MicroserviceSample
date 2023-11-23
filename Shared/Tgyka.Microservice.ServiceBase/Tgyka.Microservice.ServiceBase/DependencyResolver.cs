@@ -34,7 +34,7 @@ namespace Tgyka.Microservice.Base
                     ValidateAudience = true,
                     ValidAudience = configuration["Jwt:Audience"],
                     ValidIssuer = configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]))
                 };
                 options.Events = new JwtBearerEvents
                 {
@@ -48,7 +48,7 @@ namespace Tgyka.Microservice.Base
                             tokenUser.Email = token.Claims.First(x => x.Type == "Email").Value;
                             tokenUser.Id = token.Claims.First(x => x.Type == "UserId").Value;
                             tokenUser.Username = token.Claims.First(x => x.Type == "Username").Value;
-                            tokenUser.Jwt = token.RawData;
+                            tokenUser.AccessToken = token.RawData;
                         }
                         return Task.CompletedTask;
                     }

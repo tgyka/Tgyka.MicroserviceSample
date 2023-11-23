@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tgyka.Microservice.MssqlBase.Data.Enum;
 using Tgyka.Microservice.MssqlBase.Data.Repository;
 using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
 using Tgyka.Microservice.ProductService.Data.Repositories.Abstractions;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Requests;
-using Tgyka.Microservice.ProductService.Model.Dtos.Category.Responses;
+using Tgyka.Microservice.ProductService.Model.Dtos.Category;
 using Tgyka.Microservice.ProductService.Services.Implementations;
 
 namespace Tgyka.Microservice.ProductService.UnitTest
@@ -22,18 +22,18 @@ namespace Tgyka.Microservice.ProductService.UnitTest
             var page = 1;
             var size = 10;
             var mockCategoryRepository = new Mock<ICategoryRepository>();
-            var expectedData = new PaginationList<CategoryGridPanelDto>(new List<CategoryGridPanelDto>
+            var expectedData = new PaginationModel<CategoryGridPanelDto>(new List<CategoryGridPanelDto>
             {
                 new CategoryGridPanelDto {Id = 1 , Name = "Category1" ,  ProductCount = 5}
 
             }, 1, 1, 10);
 
-            mockCategoryRepository.Setup(repo => repo.ListWithMapper<CategoryGridPanelDto>(null,null,null,false,page,size))
+            mockCategoryRepository.Setup(repo => repo.GetAllMapped<CategoryGridPanelDto>(null,null,null,false,page,size))
                                   .Returns(expectedData);
 
             // Act
             var categoryPanelService = new CategoryPanelService(mockCategoryRepository.Object);
-            var result = categoryPanelService.ListCategorysGrid(page, size);
+            var result = categoryPanelService.GetCategorysGrid(page, size);
 
             // Assert
             Assert.Equal(200, result.Code);
@@ -56,7 +56,7 @@ namespace Tgyka.Microservice.ProductService.UnitTest
                 Name = "Category2",
                 Description = "The second category"
             };
-            mockCategoryRepository.Setup(repo => repo.SetWithCommit<CategoryPanelCreateDto, CategoryPanelDto>(categoryRequest, CommandState.Create,null)).ReturnsAsync(expectedData);
+            mockCategoryRepository.Setup(repo => repo.SetAndCommit<CategoryPanelCreateDto, CategoryPanelDto>(categoryRequest, EntityCommandType.Create,null)).ReturnsAsync(expectedData);
 
 
             // Act
