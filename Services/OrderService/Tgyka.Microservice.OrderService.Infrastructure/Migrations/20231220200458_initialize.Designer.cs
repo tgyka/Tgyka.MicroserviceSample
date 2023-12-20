@@ -12,7 +12,7 @@ using Tgyka.Microservice.OrderService.Infrastructure;
 namespace Tgyka.Microservice.OrderService.Infrastructure.Migrations
 {
     [DbContext(typeof(OrderServiceDbContext))]
-    [Migration("20231114101523_initialize")]
+    [Migration("20231220200458_initialize")]
     partial class initialize
     {
         /// <inheritdoc />
@@ -25,69 +25,7 @@ namespace Tgyka.Microservice.OrderService.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Entities.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("District")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("FullText")
-                        .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Province")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Street")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("ZipCode")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
-
-                    b.ToTable("Addresses");
-                });
-
-            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Entities.Order", b =>
+            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -126,7 +64,7 @@ namespace Tgyka.Microservice.OrderService.Infrastructure.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Entities.OrderItem", b =>
+            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate.OrderItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -178,33 +116,61 @@ namespace Tgyka.Microservice.OrderService.Infrastructure.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Entities.Address", b =>
+            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate.Order", b =>
                 {
-                    b.HasOne("Tgyka.Microservice.OrderService.Domain.Entities.Order", "Order")
-                        .WithOne("Address")
-                        .HasForeignKey("Tgyka.Microservice.OrderService.Domain.Entities.Address", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.OwnsOne("Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate.Address", "Address", b1 =>
+                        {
+                            b1.Property<int>("OrderId")
+                                .HasColumnType("int");
 
-                    b.Navigation("Order");
+                            b1.Property<string>("District")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("FullText")
+                                .IsRequired()
+                                .HasMaxLength(1000)
+                                .HasColumnType("nvarchar(1000)");
+
+                            b1.Property<string>("Province")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("ZipCode")
+                                .IsRequired()
+                                .HasMaxLength(20)
+                                .HasColumnType("nvarchar(20)");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("Orders");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Entities.OrderItem", b =>
+            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate.OrderItem", b =>
                 {
-                    b.HasOne("Tgyka.Microservice.OrderService.Domain.Entities.Order", "Order")
+                    b.HasOne("Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate.Order", null)
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Entities.Order", b =>
+            modelBuilder.Entity("Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate.Order", b =>
                 {
-                    b.Navigation("Address")
-                        .IsRequired();
-
                     b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618

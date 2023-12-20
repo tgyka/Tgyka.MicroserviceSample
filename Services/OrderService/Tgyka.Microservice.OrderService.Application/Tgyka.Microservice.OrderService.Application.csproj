@@ -8,11 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Dapper" Version="2.1.24" />
     <PackageReference Include="MediatR" Version="12.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.Rabbitmq\Tgyka.Microservice.Rabbitmq.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Tgyka.Microservice.ServiceBase\Tgyka.Microservice.ServiceBase\Tgyka.Microservice.ServiceBase.csproj" />
     <ProjectReference Include="..\Tgyka.Microservice.OrderService.Domain\Tgyka.Microservice.OrderService.Domain.csproj" />
     <ProjectReference Include="..\Tgyka.Microservice.OrderService.Infrastructure\Tgyka.Microservice.OrderService.Infrastructure.csproj" />
   </ItemGroup>

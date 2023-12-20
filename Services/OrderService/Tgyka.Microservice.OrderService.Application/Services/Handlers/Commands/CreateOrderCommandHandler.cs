@@ -8,48 +8,45 @@ using System.Text;
 using System.Threading.Tasks;
 using Tgyka.Microservice.Base.Model.ApiResponse;
 using Tgyka.Microservice.Base.Model.Token;
-using Tgyka.Microservice.MssqlBase.Data.Enum;
-using Tgyka.Microservice.MssqlBase.Data.Repository;
-using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
-using Tgyka.Microservice.OrderService.Application.Models.Dtos.OrderItem;
 using Tgyka.Microservice.OrderService.Application.Services.Commands;
-using Tgyka.Microservice.OrderService.Domain.Entities;
-using Tgyka.Microservice.OrderService.Domain.Repositories;
+using Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate;
+using Tgyka.Microservice.OrderService.Infrastructure;
 using Tgyka.Microservice.Rabbitmq.Events;
 
 namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Commands
 {
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, ApiResponse<OrderDto>>
     {
-        IOrderRepository _orderRepository;
-        IAddressRepository _addressRepository;
-        IOrderItemRepository _orderItemRepository;
-        IUnitOfWork _unitOfWork;
-        IMapper _mapper;
-        IPublishEndpoint _publishEndpoint;
-        TokenUser _tokenUser;
+        
 
-        public CreateOrderCommandHandler(IOrderRepository orderRepository, IAddressRepository addressRepository, IOrderItemRepository orderItemRepository, IUnitOfWork unitOfWork, IMapper mapper, IPublishEndpoint publishEndpoint, TokenUser tokenUser)
+        private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly TokenUser _tokenUser;
+        private readonly OrderServiceDbContext _context;
+
+        public CreateOrderCommandHandler(IMapper mapper, IPublishEndpoint publishEndpoint, TokenUser tokenUser, OrderServiceDbContext context)
         {
-            _orderRepository = orderRepository;
-            _addressRepository = addressRepository;
-            _orderItemRepository = orderItemRepository;
-            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _publishEndpoint = publishEndpoint;
             _tokenUser = tokenUser;
+            _context = context;
         }
 
         public async Task<ApiResponse<OrderDto>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var order = _mapper.Map<Order>(request);
-            order.BuyerId = _tokenUser.Id;
+            var address = new Address(request.Address.Street, request.Address.District, request.Address.Province, request.Address.ZipCode, request.Address.FullText);
+            var order = new Order(_tokenUser.Id,request.Status,address);
+            
+            request.OrderItems.ForEach(x =>
+            {
+                order.AddOrderItem(x.ProductId, x.ProductName, x.Price, x.ImageUrl);
+            });
 
-            _orderItemRepository.SetEntityState(order.OrderItems, EntityCommandType.Create);
-            _addressRepository.SetEntityState(order.Address, EntityCommandType.Create);
-            _orderRepository.SetEntityState(order, EntityCommandType.Create);
-            await _unitOfWork.CommitAsync();
+            order.SetCreated(_tokenUser.Id);
+
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
 
             _publishEndpoint.Publish(new ProductStockUpdatedEvent(order.OrderItems.Select(r => r.ProductId).ToArray(), order.Id,order.BuyerId));
 

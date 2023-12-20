@@ -3,9 +3,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
-using Tgyka.Microservice.OrderService.Domain.Entities;
+using Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate;
 
 namespace Tgyka.Microservice.OrderService.Infrastructure.Configurations
 {
@@ -19,15 +20,16 @@ namespace Tgyka.Microservice.OrderService.Infrastructure.Configurations
             builder.Property(x => x.CreatedBy).IsRequired().HasMaxLength(200);
             builder.Property(x => x.ModifiedBy).HasMaxLength(200);
 
-            builder.HasOne(e => e.Address)
-            .WithOne(e => e.Order)
-            .HasForeignKey<Address>(e => e.OrderId)
-            .IsRequired();
+            builder.OwnsOne(o => o.Address, a =>
+            {
+                a.Property(x => x.Street).IsRequired().HasMaxLength(100);
+                a.Property(x => x.Province).IsRequired().HasMaxLength(100);
+                a.Property(x => x.District).IsRequired().HasMaxLength(100);
+                a.Property(x => x.ZipCode).IsRequired().HasMaxLength(20);
+                a.Property(x => x.FullText).IsRequired().HasMaxLength(1000);
+                a.WithOwner();
+            });
 
-            builder.HasMany(e => e.OrderItems)
-                .WithOne(e => e.Order)
-                .HasForeignKey(e => e.OrderId)
-                .IsRequired();
         }
     }
 }

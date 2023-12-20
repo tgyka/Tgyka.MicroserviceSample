@@ -1,9 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
-using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
-using Tgyka.Microservice.MssqlBase.Data;
 using Tgyka.Microservice.OrderService.Infrastructure;
-using Tgyka.Microservice.OrderService.Domain.Repositories;
-using Tgyka.Microservice.OrderService.Infrastructure.Repositories;
 
 namespace Tgyka.Microservice.OrderService.Api
 {
@@ -40,16 +36,6 @@ namespace Tgyka.Microservice.OrderService.Api
                     }
                 });
             });
-        }
-
-        public static void AddThisDbContext(this IServiceCollection services) => services.AddScoped<MssqlDbContext, OrderServiceDbContext>();
-
-        public static void AddRepositories(this IServiceCollection services)
-        {
-            services.AddTransient<IOrderRepository, OrderRepository>();
-            services.AddTransient<IOrderItemRepository, OrderItemRepository>();
-            services.AddTransient<IAddressRepository, AddressRepository>();
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
         }
     }
 }

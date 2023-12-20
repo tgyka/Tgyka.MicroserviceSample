@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tgyka.Microservice.OrderService.Domain.Entities;
+using Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate;
 
 namespace Tgyka.Microservice.OrderService.Infrastructure.Configurations
 {

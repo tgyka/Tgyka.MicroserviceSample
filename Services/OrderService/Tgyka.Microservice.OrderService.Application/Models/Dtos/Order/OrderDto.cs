@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Tgyka.Microservice.MssqlBase.Model.Dtos;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Address;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.OrderItem;
-using Tgyka.Microservice.OrderService.Domain.Entities;
-using Tgyka.Microservice.OrderService.Domain.Enums;
+using Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate;
 
 namespace Tgyka.Microservice.OrderService.Application.Models.Dtos.Order
 {

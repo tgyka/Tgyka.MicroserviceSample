@@ -4,40 +4,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tgyka.Microservice.MssqlBase.Data.Enum;
-using Tgyka.Microservice.MssqlBase.Data.Repository;
-using Tgyka.Microservice.MssqlBase.Data.UnitOfWork;
-using Tgyka.Microservice.OrderService.Domain.Entities;
-using Tgyka.Microservice.OrderService.Domain.Enums;
-using Tgyka.Microservice.OrderService.Domain.Repositories;
+using Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate;
+using Tgyka.Microservice.OrderService.Infrastructure;
 using Tgyka.Microservice.Rabbitmq.Events;
 
 namespace Tgyka.Microservice.OrderService.Application.Consumers
 {
     public class ProductStockNotReservedEventConsumer : IConsumer<ProductStockNotReservedEvent>
     {
-        private readonly IOrderRepository _orderRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly OrderServiceDbContext _context;
 
-
-        public ProductStockNotReservedEventConsumer(IOrderRepository orderRepository, IUnitOfWork unitOfWork)
+        public ProductStockNotReservedEventConsumer(OrderServiceDbContext context)
         {
-            _orderRepository = orderRepository;
-            _unitOfWork = unitOfWork;
+            _context = context;
         }
 
         public async Task Consume(ConsumeContext<ProductStockNotReservedEvent> context)
         {
-            var order = _orderRepository.GetOne(r => r.Id == context.Message.OrderId);
+            var order = _context.Orders.FirstOrDefault(r => r.Id == context.Message.OrderId);
 
             if(order == null)
             {
                 return;
             }
 
-            order.Status = OrderStatus.StockNotReserved;
-            _orderRepository.SetEntityState(order, EntityCommandType.Update,context.Message.UserId);
-            await _unitOfWork.CommitAsync();
+            order.SetOrderStatus(OrderStatus.StockNotReserved);
+            order.SetModified(context.Message.UserId);
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
         }
     }
 }

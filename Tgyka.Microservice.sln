@@ -45,6 +45,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CC985C80
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgyka.Microservice.ProductService.UnitTest", "Services\ProductService\Tests\Tgyka.Microservice.ProductService.UnitTest\Tgyka.Microservice.ProductService.UnitTest.csproj", "{9483A7BE-E6A5-4791-8C41-A43EDE77544B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgyka.Microservice.DDDBase", "Shared\Tgyka.Microservice.DDDBase\Tgyka.Microservice.DDDBase.csproj", "{F6EAFFB2-2DA4-4100-84D1-C0772A537952}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{9483A7BE-E6A5-4791-8C41-A43EDE77544B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9483A7BE-E6A5-4791-8C41-A43EDE77544B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9483A7BE-E6A5-4791-8C41-A43EDE77544B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6EAFFB2-2DA4-4100-84D1-C0772A537952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6EAFFB2-2DA4-4100-84D1-C0772A537952}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6EAFFB2-2DA4-4100-84D1-C0772A537952}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6EAFFB2-2DA4-4100-84D1-C0772A537952}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +128,7 @@ Global
 		{A46D5384-3B0F-498B-A751-DE5B1E6F0BCE} = {118EF746-24B2-44F1-BEFD-CC56069FA8BB}
 		{CC985C80-5BCE-48A9-A8E7-698A431DD908} = {D4373CDD-C7C7-4EB3-9E73-69A00CFB7988}
 		{9483A7BE-E6A5-4791-8C41-A43EDE77544B} = {CC985C80-5BCE-48A9-A8E7-698A431DD908}
+		{F6EAFFB2-2DA4-4100-84D1-C0772A537952} = {8B20FAE2-F0BE-4334-BA29-98CD27F5E4DD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {016BC8B2-8052-4070-9109-268F9164C623}

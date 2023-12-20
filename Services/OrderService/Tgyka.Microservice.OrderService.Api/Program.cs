@@ -19,8 +19,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSwagger();
 builder.Services.AddAutoMapper(typeof(OrderDto));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly));
-builder.Services.AddThisDbContext();
-builder.Services.AddRepositories();
 builder.Services.AddAuthenticationAndBindTokenUser(builder.Configuration);
 
 builder.Services.AddMassTransit(x =>
