@@ -16,7 +16,7 @@ This is a sample project for an e-commerce application built using microservices
 - **Elastic Search & NEST**
 - **Automapper**
 - **Mediator**
-- - **Dapper**
+- **Dapper**
 
 
 ## Prerequisites
