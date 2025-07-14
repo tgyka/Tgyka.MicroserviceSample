@@ -1,15 +1,11 @@
 ﻿using Dapper;
 using MediatR;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Tgyka.Microservice.Base.Model.ApiResponse;
 using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
-using Tgyka.Microservice.OrderService.Application.Services.Queries;
-using Tgyka.Microservice.OrderService.Domain.Aggregates.OrderAggreegate;
 
-namespace Tgyka.Microservice.OrderService.Application.Services.Handlers.Queries
+namespace Tgyka.Microservice.OrderService.Application.Services.Queries.GetOrderByBuyerId
 {
     public class GetOrdersByBuyerIdQueryHandler : IRequestHandler<GetOrdersByBuyerIdQuery, ApiResponse<PaginationModel<OrderDto>>>
     {
