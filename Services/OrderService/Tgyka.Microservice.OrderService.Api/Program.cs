@@ -33,6 +33,8 @@ builder.Services.AddMassTransit(x =>
             e.ConfigureConsumer<ProductStockNotReservedEventConsumer>(context);
         });
 
+        cfg.UseMessageRetry(r => r.Exponential(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(10)));
+
     });
 });
 
