@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Tgyka.Microservice.Base.Model.Token;
 
@@ -49,6 +50,8 @@ namespace Tgyka.Microservice.Base
                             tokenUser.Id = token.Claims.First(x => x.Type == "UserId").Value;
                             tokenUser.Username = token.Claims.First(x => x.Type == "Username").Value;
                             tokenUser.AccessToken = token.RawData;
+                            tokenUser.Roles = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+                            tokenUser.Permissions = token.Claims.Where(c => c.Type == "Permission").Select(c => c.Value).ToList();
                         }
                         return Task.CompletedTask;
                     }
