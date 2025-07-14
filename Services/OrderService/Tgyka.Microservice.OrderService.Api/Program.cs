@@ -18,7 +18,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwagger();
 builder.Services.AddAutoMapper(typeof(OrderDto));
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly));
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly);
+    cfg.AddOpenBehavior(typeof(Tgyka.Microservice.MssqlBase.Behaviours.ITransactionalBehaviour<,>),
+        typeof(Tgyka.Microservice.MssqlBase.Behaviours.TransactionalBehaviour<,>));
+});
 builder.Services.AddAuthenticationAndBindTokenUser(builder.Configuration);
 
 builder.Services.AddMassTransit(x =>
