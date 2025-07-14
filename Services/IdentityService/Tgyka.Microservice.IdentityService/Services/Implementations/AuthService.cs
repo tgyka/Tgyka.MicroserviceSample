@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System.Text;
+using System.Linq;
 using Tgyka.Microservice.IdentityService.Data.Entities;
 using Tgyka.Microservice.IdentityService.Models;
 using Tgyka.Microservice.IdentityService.Services.Abstractions;
@@ -16,12 +17,14 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtSettings _jwtSettings;
 
-        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IOptions<JwtSettings> jwtSettings)
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, IOptions<JwtSettings> jwtSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _jwtSettings = jwtSettings.Value;
         }
 
@@ -66,6 +69,21 @@ namespace Tgyka.Microservice.IdentityService.Services.Implementations
                 new("Username", user.UserName),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
+
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+                var roleEntity = await _roleManager.FindByNameAsync(role);
+                if (roleEntity != null)
+                {
+                    var roleClaims = await _roleManager.GetClaimsAsync(roleEntity);
+                    foreach (var permission in roleClaims.Where(c => c.Type == "Permission"))
+                    {
+                        claims.Add(permission);
+                    }
+                }
+            }
 
             var token = new JwtSecurityToken(
                 issuer: _jwtSettings.Issuer,
