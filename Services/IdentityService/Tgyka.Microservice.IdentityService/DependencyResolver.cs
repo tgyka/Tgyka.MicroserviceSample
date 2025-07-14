@@ -47,6 +47,7 @@ namespace Tgyka.Microservice.IdentityService
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
         }
 
         public static void AddSettings(this IServiceCollection services, IConfiguration configuration)
