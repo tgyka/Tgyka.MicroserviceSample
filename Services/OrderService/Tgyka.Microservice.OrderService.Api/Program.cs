@@ -6,13 +6,19 @@ using Tgyka.Microservice.OrderService.Api;
 using Tgyka.Microservice.OrderService.Application.Consumers;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
 using Tgyka.Microservice.OrderService.Application.Services.Commands;
+using Tgyka.Microservice.OrderService.Application.Validators;
 using Tgyka.Microservice.OrderService.Infrastructure;
+using FluentValidation.AspNetCore;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
