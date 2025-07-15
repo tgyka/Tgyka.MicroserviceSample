@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgyka.Microservice.ProductS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiGateways", "ApiGateways", "{B3C96A14-DED0-413B-9ECC-486D785DC01D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgyka.Microservice.ApiGateway", "ApiGateways\Tgyka.Microservice.ApiGateway\Tgyka.Microservice.ApiGateway.csproj", "{B596B2A5-7CE1-4A3C-AC3F-1D7C71199C59}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{8B20FAE2-F0BE-4334-BA29-98CD27F5E4DD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgyka.Microservice.MssqlBase", "Shared\Tgyka.Microservice.MssqlBase\Tgyka.Microservice.MssqlBase.csproj", "{AFBC5C8F-4F87-4B3F-92FE-20448F7FF423}"
@@ -105,6 +107,10 @@ Global
 		{F6EAFFB2-2DA4-4100-84D1-C0772A537952}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6EAFFB2-2DA4-4100-84D1-C0772A537952}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6EAFFB2-2DA4-4100-84D1-C0772A537952}.Release|Any CPU.Build.0 = Release|Any CPU
+                {B596B2A5-7CE1-4A3C-AC3F-1D7C71199C59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+                {B596B2A5-7CE1-4A3C-AC3F-1D7C71199C59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+                {B596B2A5-7CE1-4A3C-AC3F-1D7C71199C59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+                {B596B2A5-7CE1-4A3C-AC3F-1D7C71199C59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,6 +135,7 @@ Global
 		{CC985C80-5BCE-48A9-A8E7-698A431DD908} = {D4373CDD-C7C7-4EB3-9E73-69A00CFB7988}
 		{9483A7BE-E6A5-4791-8C41-A43EDE77544B} = {CC985C80-5BCE-48A9-A8E7-698A431DD908}
 		{F6EAFFB2-2DA4-4100-84D1-C0772A537952} = {8B20FAE2-F0BE-4334-BA29-98CD27F5E4DD}
+                {B596B2A5-7CE1-4A3C-AC3F-1D7C71199C59} = {B3C96A14-DED0-413B-9ECC-486D785DC01D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {016BC8B2-8052-4070-9109-268F9164C623}

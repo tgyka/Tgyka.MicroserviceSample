@@ -7,6 +7,7 @@ This is a sample project for an e-commerce application built using microservices
 3. **Search Service**
 4. **Basket Service**
 5. **Identity Service**
+6. **API Gateway**
 
 ## Technologies
 - **.Net 7.0**
