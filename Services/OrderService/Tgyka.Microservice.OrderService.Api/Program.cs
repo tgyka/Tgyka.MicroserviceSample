@@ -7,30 +7,20 @@ using Tgyka.Microservice.OrderService.Application.Consumers;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
 using Tgyka.Microservice.OrderService.Application.Services.Commands;
 using Tgyka.Microservice.OrderService.Infrastructure;
-using FluentValidation.AspNetCore;
 using FluentValidation;
 using Tgyka.Microservice.OrderService.Application.Services.Commands.CreateOrder;
+using Tgyka.Microservice.OrderService.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddFluentValidationClientsideAdapters();
-builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderCommandValidator>();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSwagger();
-builder.Services.AddAutoMapper(typeof(OrderDto));
-builder.Services.AddMediatR(cfg =>
-{
-    cfg.RegisterServicesFromAssembly(typeof(CreateOrderCommand).Assembly);
-    cfg.AddOpenBehavior(typeof(Tgyka.Microservice.MssqlBase.Behaviours.ITransactionalBehaviour<,>),
-        typeof(Tgyka.Microservice.MssqlBase.Behaviours.TransactionalBehaviour<,>));
-});
+
 builder.Services.AddAuthenticationAndBindTokenUser(builder.Configuration);
+
+builder.Services.AddApplicationServices();
 
 builder.Services.AddMassTransit(x =>
 {
@@ -59,7 +49,6 @@ builder.Services.AddDbContext<OrderServiceDbContext>(opt =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

@@ -13,7 +13,5 @@ namespace Tgyka.Microservice.IdentityService.Services.Abstractions
         Task<ApiResponse<string>> AddPermissionToRole(string roleName, string permission);
         Task<ApiResponse<string>> UpdatePermission(string roleName, string oldPermission, string newPermission);
         Task<ApiResponse<string>> DeletePermission(string roleName, string permission);
-        Task<ApiResponse<string>> AssignRoleToUser(string userId, string roleName);
-        Task<ApiResponse<string>> AddPermissionToRole(string roleName, string permission);
     }
 }

@@ -17,7 +17,6 @@ namespace Tgyka.Microservice.IdentityService.Controllers
             _roleService = roleService;
         }
 
-        [HttpPost("create")]
         public async Task<IActionResult> Create(string name)
         {
             return ApiActionResult(await _roleService.CreateRole(name));
