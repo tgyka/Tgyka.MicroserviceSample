@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using MediatR;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using Tgyka.Microservice.Base.Model.ApiResponse;
 using Tgyka.Microservice.MssqlBase.Model.RepositoryDtos;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Address;
@@ -11,14 +12,17 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Queries.GetOrderB
 {
     public class GetOrdersByBuyerIdQueryHandler : IRequestHandler<GetOrdersByBuyerIdQuery, ApiResponse<PaginationModel<OrderDto>>>
     {
-        public GetOrdersByBuyerIdQueryHandler()
-        {
+        private readonly string _connectionString;
 
+
+        public GetOrdersByBuyerIdQueryHandler(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("SqlServer");
         }
 
         public async Task<ApiResponse<PaginationModel<OrderDto>>> Handle(GetOrdersByBuyerIdQuery request, CancellationToken cancellationToken)
         {
-            using (var connection = new SqlConnection())
+            using (var connection = new SqlConnection(_connectionString))
             {
                 var dataSql = @"
                     SELECT
