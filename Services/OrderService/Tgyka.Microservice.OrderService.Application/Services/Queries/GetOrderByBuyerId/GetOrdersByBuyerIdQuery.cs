@@ -15,6 +15,5 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Queries
         public string BuyerId { get; set; }
         public int Page { get; set; }
         public int Size { get; set; }
-        public string ConnectionString { get; set; }
     }
 }

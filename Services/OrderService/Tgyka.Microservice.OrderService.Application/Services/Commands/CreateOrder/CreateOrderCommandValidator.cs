@@ -1,7 +1,8 @@
 using FluentValidation;
+using Tgyka.Microservice.OrderService.Application.Models.Dtos.OrderItem;
 using Tgyka.Microservice.OrderService.Application.Services.Commands;
 
-namespace Tgyka.Microservice.OrderService.Application.Validators;
+namespace Tgyka.Microservice.OrderService.Application.Services.Commands.CreateOrder;
 
 public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
 {
@@ -14,5 +15,16 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(x => x.Address.ZipCode).NotEmpty();
         RuleFor(x => x.OrderItems).NotNull().NotEmpty();
         RuleForEach(x => x.OrderItems).SetValidator(new OrderItemCreateDtoValidator());
+    }
+}
+
+public class OrderItemCreateDtoValidator : AbstractValidator<OrderItemCreateDto>
+{
+    public OrderItemCreateDtoValidator()
+    {
+        RuleFor(x => x.ProductId).GreaterThan(0);
+        RuleFor(x => x.ProductName).NotEmpty();
+        RuleFor(x => x.Price).GreaterThan(0);
+        RuleFor(x => x.ImageUrl).NotEmpty();
     }
 }

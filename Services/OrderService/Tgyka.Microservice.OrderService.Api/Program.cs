@@ -6,10 +6,10 @@ using Tgyka.Microservice.OrderService.Api;
 using Tgyka.Microservice.OrderService.Application.Consumers;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
 using Tgyka.Microservice.OrderService.Application.Services.Commands;
-using Tgyka.Microservice.OrderService.Application.Validators;
 using Tgyka.Microservice.OrderService.Infrastructure;
 using FluentValidation.AspNetCore;
 using FluentValidation;
+using Tgyka.Microservice.OrderService.Application.Services.Commands.CreateOrder;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -18,7 +18,7 @@ namespace Tgyka.Microservice.OrderService.Application.Services.Queries.GetOrderB
 
         public async Task<ApiResponse<PaginationModel<OrderDto>>> Handle(GetOrdersByBuyerIdQuery request, CancellationToken cancellationToken)
         {
-            using (var connection = new SqlConnection(request.ConnectionString))
+            using (var connection = new SqlConnection())
             {
                 var dataSql = @"
                     SELECT
