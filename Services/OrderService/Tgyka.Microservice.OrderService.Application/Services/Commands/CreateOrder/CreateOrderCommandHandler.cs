@@ -46,9 +46,10 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Api
         order.SetCreated(_tokenUser.Id);
 
         await _context.Orders.AddAsync(order);
-        await _context.SaveChangesAsync();
 
-        _publishEndpoint.Publish(new ProductStockUpdatedEvent(order.OrderItems.Select(r => r.ProductId).ToArray(), order.Id,order.BuyerId));
+        await _publishEndpoint.Publish(new ProductStockUpdatedEvent(order.OrderItems.Select(r => r.ProductId).ToArray(), order.Id,order.BuyerId));
+
+        await _context.SaveChangesAsync();
 
         return ApiResponse<OrderDto>.Success(201,_mapper.Map<OrderDto>(order));
     }

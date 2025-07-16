@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Tgyka.Microservice.Base;
 using Tgyka.Microservice.Base.Middlewares;
 using Tgyka.Microservice.OrderService.Api;
-using Tgyka.Microservice.OrderService.Application.Consumers;
 using Tgyka.Microservice.OrderService.Application.Models.Dtos.Order;
 using Tgyka.Microservice.OrderService.Application.Services.Commands;
 using Tgyka.Microservice.OrderService.Infrastructure;
@@ -24,15 +23,9 @@ builder.Services.AddApplicationServices();
 
 builder.Services.AddMassTransit(x =>
 {
-    x.AddConsumer<ProductStockNotReservedEventConsumer>();
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetValue<string>("RabbitMqUri"));
-
-        cfg.ReceiveEndpoint("product-stock-not-reserved", e =>
-        {
-            e.ConfigureConsumer<ProductStockNotReservedEventConsumer>(context);
-        });
 
         cfg.UseMessageRetry(r => r.Exponential(5, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(10)));
 

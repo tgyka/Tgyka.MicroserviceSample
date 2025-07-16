@@ -35,9 +35,7 @@ namespace Tgyka.Microservice.ProductService.Consumers
             {
                 if (product.Stock <= 0)
                 {
-                    _publishEndpoint.Publish(new ProductStockNotReservedEvent(product.Id, context.Message.OrderId,context.Message.UserId));
-                    products = products.Where(r => r.Id != product.Id).ToList();
-                    continue;
+                    throw new Exception("Product stock is not enough for order. ProductId: " + product.Id);
                 }
 
                 product.Stock -= 1;
