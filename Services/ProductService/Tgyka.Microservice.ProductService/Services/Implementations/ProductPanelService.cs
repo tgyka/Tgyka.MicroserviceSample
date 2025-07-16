@@ -17,13 +17,13 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
     {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
-        private readonly IPublishEndpoint _publishEndpoint;
+        private readonly ISendEndpoint _sendEndpoint;
 
-        public ProductPanelService(IProductRepository productRepository, ICategoryRepository categoryRepository, IPublishEndpoint publishEndpoint)
+        public ProductPanelService(IProductRepository productRepository, ICategoryRepository categoryRepository, ISendEndpoint sendEndpoint)
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
-            _publishEndpoint = publishEndpoint;
+            _sendEndpoint = sendEndpoint;
         }
 
         public ApiResponse<PaginationModel<ProductGridPanelDto>> GetProductsGrid(int page, int size)
@@ -49,7 +49,7 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
                 ApiResponse<ProductPanelDto>.Error(400,"Category is not found");
             }
 
-            _publishEndpoint.Publish(new ProductCreatedEvent(data.Id,data.Name,data.Description,data.Price,data.Stock,data.CategoryId,category.Name));
+            await _sendEndpoint.Send(new ProductCreatedEvent(data.Id,data.Name,data.Description,data.Price,data.Stock,data.CategoryId,category.Name));
 
             return ApiResponse<ProductPanelDto>.Success(201, data);
         }
@@ -65,7 +65,7 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
                 ApiResponse<ProductPanelDto>.Error(400, "Category is not found");
             }
 
-            _publishEndpoint.Publish(new ProductUpdatedEvent(data.Id, data.Name, data.Description, data.Price, data.Stock, data.CategoryId,category.Name));
+            await _sendEndpoint.Send(new ProductUpdatedEvent(data.Id, data.Name, data.Description, data.Price, data.Stock, data.CategoryId,category.Name));
 
             return ApiResponse<ProductPanelDto>.Success(200, data);
         }
@@ -74,7 +74,7 @@ namespace Tgyka.Microservice.ProductService.Services.Implementations
         {
             var entity = _productRepository.GetOne(r => r.Id == productId);
             var data = await _productRepository.SetAndCommit<Product, ProductPanelDto>(entity, EntityCommandType.SoftDelete);
-            _publishEndpoint.Publish(new ProductDeletedEvent(productId));
+            await _sendEndpoint.Send(new ProductDeletedEvent(productId));
             return ApiResponse<ProductPanelDto>.Success(200, data);
         }
     }
